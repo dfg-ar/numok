@@ -67,6 +67,18 @@ $routes = [
 
     // Webhook routes
     'webhook/stripe' => ['WebhookController', 'stripeWebhook'],
+
+    // Partner routes
+    'partner/login' => ['PartnerAuthController', 'index'],
+    'partner/auth/login' => ['PartnerAuthController', 'login'],
+    'partner/register' => ['PartnerAuthController', 'register'],
+    'partner/auth/register' => ['PartnerAuthController', 'store'],
+    'partner/logout' => ['PartnerAuthController', 'logout'],
+    'partner/dashboard' => ['PartnerDashboardController', 'index'],
+
+    // Partner program routes
+    'partner/programs' => ['PartnerProgramsController', 'index'],
+    'partner/programs/join' => ['PartnerProgramsController', 'join'],
 ];
 
 // Check if route exists or matches a pattern
