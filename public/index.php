@@ -56,6 +56,11 @@ $routes = [
     'partners/(\d+)/delete' => ['PartnersController', 'delete'],
     'partners/(\d+)/assign-program' => ['PartnersController', 'assignProgram'],
 
+    // Conversions routes
+    'conversions' => ['ConversionsController', 'index'],
+    'conversions/update-status' => ['ConversionsController', 'updateStatus'],
+    'conversions/export' => ['ConversionsController', 'export'],
+
     // API routes
     'api/tracking/config/(\d+)' => ['TrackingController', 'config'],
     'api/tracking/click' => ['TrackingController', 'click'],
