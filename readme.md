@@ -35,7 +35,7 @@ git clone https://github.com/numok/numok.git
 cd numok`
 
 # Install dependencies
-composer install`
+`composer install`
 
 ### 3\. Database Setup
 
