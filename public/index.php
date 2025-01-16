@@ -23,71 +23,14 @@ $path = parse_url($path, PHP_URL_PATH);
 $path = trim($path, '/');
 
 // Define routes
-/*$routes = [
-    // Core routes
-    '' => ['DashboardController', 'index'],
-    'dashboard' => ['DashboardController', 'index'],
-
-    // Auth routes
-    'login' => ['AuthController', 'index'],
-    'auth/login' => ['AuthController', 'login'],
-    'logout' => ['AuthController', 'logout'],
-
-    // Settings routes
-    'settings' => ['SettingsController', 'index'],
-    'settings/update' => ['SettingsController', 'update'],
-    'settings/test-connection' => ['SettingsController', 'testConnection'],
-
-    // Programs routes
-    'programs' => ['ProgramsController', 'index'],
-    'programs/create' => ['ProgramsController', 'create'],
-    'programs/store' => ['ProgramsController', 'store'],
-    'programs/(\d+)/edit' => ['ProgramsController', 'edit'],
-    'programs/(\d+)/integration' => ['ProgramsController', 'integration'],
-    'programs/(\d+)/update' => ['ProgramsController', 'update'],
-    'programs/(\d+)/delete' => ['ProgramsController', 'delete'],
-
-    // Partners routes
-    'partners' => ['PartnersController', 'index'],
-    'partners/create' => ['PartnersController', 'create'],
-    'partners/store' => ['PartnersController', 'store'],
-    'partners/(\d+)/edit' => ['PartnersController', 'edit'],
-    'partners/(\d+)/update' => ['PartnersController', 'update'],
-    'partners/(\d+)/delete' => ['PartnersController', 'delete'],
-    'partners/(\d+)/assign-program' => ['PartnersController', 'assignProgram'],
-
-    // Conversions routes
-    'conversions' => ['ConversionsController', 'index'],
-    'conversions/update-status' => ['ConversionsController', 'updateStatus'],
-    'conversions/export' => ['ConversionsController', 'export'],
-
-    // API routes
-    'api/tracking/config/(\d+)' => ['TrackingController', 'config'],
-    'api/tracking/click' => ['TrackingController', 'click'],
-
-    // Webhook routes
-    'webhook/stripe' => ['WebhookController', 'stripeWebhook'],
-
-    // Partner routes
-    'partner/login' => ['PartnerAuthController', 'index'],
-    'partner/auth/login' => ['PartnerAuthController', 'login'],
-    'partner/register' => ['PartnerAuthController', 'register'],
-    'partner/auth/register' => ['PartnerAuthController', 'store'],
-    'partner/logout' => ['PartnerAuthController', 'logout'],
-    'partner/dashboard' => ['PartnerDashboardController', 'index'],
-
-    // Partner program routes
-    'partner/programs' => ['PartnerProgramsController', 'index'],
-    'partner/programs/join' => ['PartnerProgramsController', 'join'],
-];*/
-
-// Define routes
 $routes = [
     // Partner routes (root level)
     '' => ['PartnerDashboardController', 'index'],
     'login' => ['PartnerAuthController', 'index'],
     'auth/login' => ['PartnerAuthController', 'login'],
     'register' => ['PartnerAuthController', 'register'],
+    'settings' => ['PartnerProfileController', 'index'],
+    'settings/update' => ['PartnerProfileController', 'update'],
     'logout' => ['PartnerAuthController', 'logout'],
     'dashboard' => ['PartnerDashboardController', 'index'],
     'tracking' => ['PartnerTrackingController', 'index'],
@@ -103,6 +46,7 @@ $routes = [
     'admin/dashboard' => ['DashboardController', 'index'],
     'admin/settings' => ['SettingsController', 'index'],
     'admin/settings/update' => ['SettingsController', 'update'],
+    'admin/settings/update-profile' => ['SettingsController', 'updateProfile'],
     'admin/settings/test-connection' => ['SettingsController', 'testConnection'],
     
     // Programs routes

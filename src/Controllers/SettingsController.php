@@ -141,4 +141,93 @@ class SettingsController extends Controller {
 
         return $settings;
     }
+
+    public function updateProfile(): void {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: /admin/settings');
+            exit;
+        }
+    
+        $userId = $_SESSION['user_id'];
+        $currentPassword = $_POST['current_password'] ?? '';
+        $newEmail = filter_var($_POST['email'] ?? '', FILTER_VALIDATE_EMAIL);
+        $newPassword = $_POST['new_password'] ?? '';
+        $confirmPassword = $_POST['confirm_password'] ?? '';
+    
+        try {
+            // Verify current user
+            $user = Database::query(
+                "SELECT * FROM users WHERE id = ? LIMIT 1",
+                [$userId]
+            )->fetch();
+    
+            if (!$user || !password_verify($currentPassword, $user['password'])) {
+                $_SESSION['settings_error'] = 'Current password is incorrect';
+                header('Location: /admin/settings');
+                exit;
+            }
+    
+            $updates = [];
+            $params = [];
+    
+            // Handle email update
+            if ($newEmail && $newEmail !== $user['email']) {
+                // Check if email is already taken
+                $existing = Database::query(
+                    "SELECT id FROM users WHERE email = ? AND id != ? LIMIT 1",
+                    [$newEmail, $userId]
+                )->fetch();
+    
+                if ($existing) {
+                    $_SESSION['settings_error'] = 'Email address is already in use';
+                    header('Location: /admin/settings');
+                    exit;
+                }
+    
+                $updates[] = "email = ?";
+                $params[] = $newEmail;
+            }
+    
+            // Handle password update
+            if ($newPassword) {
+                if (strlen($newPassword) < 8) {
+                    $_SESSION['settings_error'] = 'New password must be at least 8 characters long';
+                    header('Location: /admin/settings');
+                    exit;
+                }
+    
+                if ($newPassword !== $confirmPassword) {
+                    $_SESSION['settings_error'] = 'New passwords do not match';
+                    header('Location: /admin/settings');
+                    exit;
+                }
+    
+                $updates[] = "password = ?";
+                $params[] = password_hash($newPassword, PASSWORD_DEFAULT);
+            }
+    
+            // If there are updates to make
+            if (!empty($updates)) {
+                $params[] = $userId;
+                Database::query(
+                    "UPDATE users SET " . implode(', ', $updates) . " WHERE id = ?",
+                    $params
+                );
+    
+                // Update session if email changed
+                if ($newEmail && $newEmail !== $user['email']) {
+                    $_SESSION['user_email'] = $newEmail;
+                }
+    
+                $_SESSION['settings_success'] = 'Profile updated successfully';
+            }
+    
+        } catch (\Exception $e) {
+            error_log("Profile update error: " . $e->getMessage());
+            $_SESSION['settings_error'] = 'Failed to update profile. Please try again.';
+        }
+    
+        header('Location: /admin/settings');
+        exit;
+    }
 }

@@ -53,6 +53,8 @@
                                     <strong class="text-gray-900"><?= htmlspecialchars($_SESSION['partner_company'] ?? '') ?></strong>
                                 </div>
                                 <div class="border-t border-gray-100"></div>
+                                <a href="/settings" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Settings</a>
+                                <div class="border-t border-gray-100"></div>
                                 <a href="/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Sign out</a>
                             </div>
                         </div>
