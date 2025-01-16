@@ -1,15 +1,9 @@
-<?php
-// File: src/Views/partner/auth/login.php
-?>
 <div class="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Partner Login</h2>
-        <p class="mt-2 text-center text-sm text-gray-600">
-            Or
-            <a href="/register" class="font-medium text-indigo-600 hover:text-indigo-500">
-                register for a new account
-            </a>
-        </p>
+        <img src="/assets/images/numok-logo.png" alt="Numok" class="h-12 mx-auto" />
+        <h2 class="mt-2 text-center text-gray-400">
+            Partner login
+        </h2>
     </div>
 
     <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
@@ -88,6 +82,13 @@
                     </button>
                 </div>
             </form>
+            
         </div>
+        <p class="mt-8 text-center text-sm text-gray-600">
+            Or
+            <a href="/register" class="font-medium text-indigo-600 hover:text-indigo-500">
+                register for a new account
+            </a>
+        </p>
     </div>
 </div>

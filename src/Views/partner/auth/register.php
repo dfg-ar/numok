@@ -1,12 +1,9 @@
 <div class="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Create your partner account</h2>
-        <p class="mt-2 text-center text-sm text-gray-600">
-            Already registered?
-            <a href="/login" class="font-medium text-indigo-600 hover:text-indigo-500">
-                Sign in to your account
-            </a>
-        </p>
+    <img src="/assets/images/numok-logo.png" alt="Numok" class="h-12 mx-auto" />
+        <h2 class="mt-2 text-center text-gray-400">
+            Create your partner account
+        </h2>
     </div>
 
     <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
@@ -32,7 +29,7 @@
                         Company Name
                     </label>
                     <div class="mt-1">
-                        <input id="company_name" name="company_name" type="text" required
+                        <input id="company_name" name="company_name" type="text" required autofocus
                                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                     </div>
                 </div>
@@ -76,5 +73,11 @@
                 </div>
             </form>
         </div>
+        <p class="mt-8 text-center text-sm text-gray-600">
+            Already registered?
+            <a href="/login" class="font-medium text-indigo-600 hover:text-indigo-500">
+                Sign in to your account
+            </a>
+        </p>
     </div>
 </div>
