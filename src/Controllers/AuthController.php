@@ -35,15 +35,6 @@ class AuthController extends Controller {
             header('Location: /admin/login');
             exit;
         }
-
-        // Generate a new hash for testing
-        if ($email === 'admin@numok.com' && $password === 'admin123') {
-            $hash = password_hash('admin123', PASSWORD_DEFAULT);
-            Database::query(
-                "UPDATE users SET password = ? WHERE email = ?",
-                [$hash, $email]
-            );
-        }
         
         $stmt = Database::query(
             "SELECT * FROM users WHERE email = ? LIMIT 1", 

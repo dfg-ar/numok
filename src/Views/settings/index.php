@@ -262,7 +262,7 @@
                                     <li>Go to your <a href="https://dashboard.stripe.com/apikeys" class="text-indigo-600 hover:text-indigo-500" target="_blank">Stripe Dashboard</a></li>
                                     <li>Copy your Secret Key</li>
                                     <li>Create a new webhook endpoint pointing to:
-                                        <code class="block mt-1 p-2 bg-gray-50 rounded text-xs"><?= htmlspecialchars(rtrim($settings['app_url'] ?? 'https://yourdomain.com', '/') . '/webhook/stripe') ?></code>
+                                        <code class="block mt-1 p-2 bg-gray-50 rounded text-xs"><?= htmlspecialchars(rtrim($settings['app_url'] ?? 'https://'.$_SERVER['HTTP_HOST'], '/') . '/webhook/stripe') ?></code>
                                     </li>
                                     <li>Copy the webhook signing secret</li>
                                 </ol>
