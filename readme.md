@@ -20,10 +20,6 @@ Step-by-Step Installation
 
 ### 1\. Prepare Your Server
 
-bash
-
-Copy
-
 `# Install required PHP extensions
 php -v  # Verify PHP version
 php -m  # Check for required extensions:
@@ -34,22 +30,14 @@ php -m  # Check for required extensions:
 
 ### 2\. Get the Code
 
-bash
-
-Copy
-
 `# Clone the repository
 git clone https://github.com/numok/numok.git
-cd numok
+cd numok`
 
 # Install dependencies
 composer install`
 
 ### 3\. Database Setup
-
-bash
-
-Copy
 
 `# Create a new MySQL database
 mysql -u root -p
@@ -59,17 +47,9 @@ CREATE DATABASE numok CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;`
 
 1.  Copy the example configuration file:
 
-    bash
-
-    Copy
-
     `cp config/config.example.php config/config.php`
 
 2.  Edit `config/config.php` with your settings:
-
-    php
-
-    Copy
 
     `return [
         'db' => [
@@ -85,10 +65,6 @@ CREATE DATABASE numok CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;`
 
 ### 5\. Database Migration
 
-bash
-
-Copy
-
 `# Import the database structure
 mysql -u your_db_user -p numok < database/numok-0-1.sql`
 
@@ -97,10 +73,6 @@ mysql -u your_db_user -p numok < database/numok-0-1.sql`
 #### Apache
 
 Ensure mod_rewrite is enabled and `.htaccess` is working:
-
-apache
-
-Copy
 
 `<VirtualHost *:80>
     DocumentRoot /path/to/numok/public
@@ -111,10 +83,6 @@ Copy
 </VirtualHost>`
 
 #### Nginx
-
-nginx
-
-Copy
 
 `server {
     listen  80;
@@ -135,10 +103,6 @@ Copy
 
 ### 7\. File Permissions
 
-bash
-
-Copy
-
 `# Set proper permissions
 chmod -R 755 public/
 chmod -R 755 src/
@@ -147,10 +111,6 @@ chmod -R 777 public/tracking/`
 ### 8\. Create Admin Account
 
 Since Numok separates admins (users table) from partners (partners table), you'll need to create the first admin account directly in the database:
-
-sql
-
-Copy
 
 `-- Insert the first admin user
 INSERT INTO users (
@@ -167,6 +127,7 @@ INSERT INTO users (
     1,
     CURRENT_TIMESTAMP
 );`
+
 After running this SQL:
 1\.  Access `/admin/login`
 2\.  Login with:
@@ -221,20 +182,4 @@ Support
 -------
 
 -   GitHub Issues: Report bugs and feature requests
--   Documentation: [Link to documentation]
--   Community Forum: [Link to forum]
-
-Contributing
-------------
-
-See <CONTRIBUTING.md> for details on:
-
--   Code of Conduct
--   Development setup
--   Testing
--   Pull request process
-
-License
--------
-
-This project is licensed under the MIT License - see the <LICENSE> file for details.
+-   Documentation: https://numok.com
