@@ -11,7 +11,7 @@ class AuthMiddleware {
 
         // Check if user is logged in
         if (!isset($_SESSION['user_id'])) {
-            header('Location: /login');
+            header('Location: /admin/login');
             exit;
         }
     }
@@ -21,7 +21,7 @@ class AuthMiddleware {
         
         // Check if user is admin
         if (!($_SESSION['is_admin'] ?? false)) {
-            header('Location: /dashboard');
+            header('Location: /admin/dashboard');
             exit;
         }
     }

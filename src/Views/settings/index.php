@@ -35,7 +35,7 @@
         <?php endif; ?>
 
         <div class="mt-6 grid grid-cols-1 gap-x-8 gap-y-8 md:grid-cols-3">
-            <form action="/settings/update" method="POST" class="md:col-span-2">
+            <form action="/admin/settings/update" method="POST" class="md:col-span-2">
                 <!-- General Settings -->
                 <div class="bg-white shadow sm:rounded-lg mb-6">
                     <div class="px-4 py-5 sm:p-6">

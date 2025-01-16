@@ -27,7 +27,7 @@ class SettingsController extends Controller {
 
     public function update(): void {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: /settings');
+            header('Location: /admin/settings');
             exit;
         }
 
@@ -55,7 +55,7 @@ class SettingsController extends Controller {
             $_SESSION['settings_error'] = 'Failed to update settings. Please try again.';
         }
 
-        header('Location: /settings');
+        header('Location: /admin/settings');
         exit;
     }
 

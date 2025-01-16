@@ -100,7 +100,7 @@ class ConversionsController extends Controller {
 
     public function updateStatus(): void {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: /conversions');
+            header('Location: /admin/conversions');
             exit;
         }
 
@@ -109,7 +109,7 @@ class ConversionsController extends Controller {
 
         if (!$id || !in_array($status, ['pending', 'payable', 'rejected', 'paid'])) {
             $_SESSION['error'] = 'Invalid request parameters';
-            header('Location: /conversions');
+            header('Location: /admin/conversions');
             exit;
         }
 
@@ -126,7 +126,7 @@ class ConversionsController extends Controller {
             $_SESSION['error'] = 'Failed to update conversion status.';
         }
 
-        header('Location: /conversions');
+        header('Location: /admin/conversions');
         exit;
     }
 

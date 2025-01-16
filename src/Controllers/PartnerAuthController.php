@@ -8,7 +8,7 @@ class PartnerAuthController extends PartnerBaseController {
     public function index(): void {
         // If already logged in, redirect to partner dashboard
         if ($this->isLoggedIn()) {
-            header('Location: /partner/dashboard');
+            header('Location: /dashboard');
             exit;
         }
         
@@ -23,7 +23,7 @@ class PartnerAuthController extends PartnerBaseController {
 
     public function login(): void {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: /partner/login');
+            header('Location: /login');
             exit;
         }
 
@@ -32,7 +32,7 @@ class PartnerAuthController extends PartnerBaseController {
 
         if (empty($email) || empty($password)) {
             $_SESSION['login_error'] = 'Email and password are required';
-            header('Location: /partner/login');
+            header('Location: /login');
             exit;
         }
         
@@ -43,25 +43,25 @@ class PartnerAuthController extends PartnerBaseController {
 
         if (!$partner) {
             $_SESSION['login_error'] = 'Account not found';
-            header('Location: /partner/login');
+            header('Location: /login');
             exit;
         }
 
         if (!password_verify($password, $partner['password'])) {
             $_SESSION['login_error'] = 'Invalid password';
-            header('Location: /partner/login');
+            header('Location: /login');
             exit;
         }
 
         if ($partner['status'] === 'pending') {
             $_SESSION['login_error'] = 'Your account is pending approval';
-            header('Location: /partner/login');
+            header('Location: /login');
             exit;
         }
 
         if ($partner['status'] === 'suspended') {
             $_SESSION['login_error'] = 'Your account has been suspended';
-            header('Location: /partner/login');
+            header('Location: /login');
             exit;
         }
 
@@ -73,7 +73,7 @@ class PartnerAuthController extends PartnerBaseController {
         // Regenerate session ID for security
         session_regenerate_id(true);
         
-        header('Location: /partner/dashboard');
+        header('Location: /dashboard');
         exit;
     }
 
@@ -87,7 +87,7 @@ class PartnerAuthController extends PartnerBaseController {
         // Debug logging
         error_log('Partner registration attempt - POST data: ' . print_r($_POST, true));
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: /partner/register');
+            header('Location: /register');
             exit;
         }
 
@@ -96,7 +96,7 @@ class PartnerAuthController extends PartnerBaseController {
         foreach ($required as $field) {
             if (empty($_POST[$field])) {
                 $_SESSION['register_error'] = 'All fields are required';
-                header('Location: /partner/register');
+                header('Location: /register');
                 exit;
             }
         }
@@ -105,7 +105,7 @@ class PartnerAuthController extends PartnerBaseController {
         $email = filter_var($_POST['email'], FILTER_VALIDATE_EMAIL);
         if (!$email) {
             $_SESSION['register_error'] = 'Valid email address is required';
-            header('Location: /partner/register');
+            header('Location: /register');
             exit;
         }
 
@@ -117,7 +117,7 @@ class PartnerAuthController extends PartnerBaseController {
 
         if ($existing) {
             $_SESSION['register_error'] = 'This email is already registered';
-            header('Location: /partner/register');
+            header('Location: /register');
             exit;
         }
 
@@ -128,7 +128,7 @@ class PartnerAuthController extends PartnerBaseController {
             
             if (empty($companyName) || empty($contactName)) {
                 $_SESSION['register_error'] = 'Company name and contact name are required';
-                header('Location: /partner/register');
+                header('Location: /register');
                 exit;
             }
             
@@ -145,10 +145,10 @@ class PartnerAuthController extends PartnerBaseController {
             error_log("Partner registered successfully - Email: $email, Company: $companyName");
 
             $_SESSION['register_success'] = 'Registration successful!';
-            header('Location: /partner/login');
+            header('Location: /login');
         } catch (\Exception $e) {
             $_SESSION['register_error'] = 'Registration failed. Please try again.';
-            header('Location: /partner/register');
+            header('Location: /register');
         }
         exit;
     }
@@ -163,7 +163,7 @@ class PartnerAuthController extends PartnerBaseController {
         
         session_destroy();
         
-        header('Location: /partner/login');
+        header('Location: /login');
         exit;
     }
 

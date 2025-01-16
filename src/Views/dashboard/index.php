@@ -30,7 +30,7 @@
                     <p class="mt-2 text-sm text-gray-700">A list of recent conversions and their status.</p>
                 </div>
                 <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-                    <a href="/conversions" class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-indigo-500">View all</a>
+                    <a href="/admin/conversions" class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-indigo-500">View all</a>
                 </div>
             </div>
             <?php if (!empty($recent_conversions)): ?>
@@ -90,7 +90,7 @@
                 <h3 class="mt-2 text-sm font-medium text-gray-900">No conversions</h3>
                 <p class="mt-1 text-sm text-gray-500">Get started by adding your first program.</p>
                 <div class="mt-6">
-                    <a href="/programs/new" class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-500">
+                    <a href="/admin/programs/new" class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-500">
                         Create Program
                     </a>
                 </div>

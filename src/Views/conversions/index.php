@@ -6,14 +6,14 @@
                 <p class="mt-2 text-sm text-gray-700">A list of all conversions from your affiliate programs.</p>
             </div>
             <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-                <a href="/conversions/export" class="block rounded-md bg-white px-3 py-2 text-center text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                <a href="/admin/conversions/export" class="block rounded-md bg-white px-3 py-2 text-center text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
                     Export CSV
                 </a>
             </div>
         </div>
 
         <!-- Filter Form -->
-        <form method="GET" action="/conversions" class="mt-8 flex items-center gap-4">
+        <form method="GET" action="/admin/conversions" class="mt-8 flex items-center gap-4">
             <div class="flex-1">
                 <select id="status" name="status" class="block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                     <option value="all" <?= ($filters['status'] ?? 'all') === 'all' ? 'selected' : '' ?>>All Status</option>
@@ -169,14 +169,14 @@
                                              style="display: none;">
                                             <div class="py-1" role="none">
                                                 <?php if ($conversion['status'] === 'pending'): ?>
-                                                <form method="POST" action="/conversions/update-status" class="block w-full">
+                                                <form method="POST" action="/admin/conversions/update-status" class="block w-full">
                                                     <input type="hidden" name="id" value="<?= $conversion['id'] ?>">
                                                     <input type="hidden" name="status" value="payable">
                                                     <button type="submit" class="text-green-700 hover:bg-gray-100 hover:text-green-900 block w-full px-4 py-2 text-left text-sm" role="menuitem">
                                                         Mark as Payable
                                                     </button>
                                                 </form>
-                                                <form method="POST" action="/conversions/update-status" class="block w-full">
+                                                <form method="POST" action="/admin/conversions/update-status" class="block w-full">
                                                     <input type="hidden" name="id" value="<?= $conversion['id'] ?>">
                                                     <input type="hidden" name="status" value="rejected">
                                                     <button type="submit" class="text-red-700 hover:bg-gray-100 hover:text-red-900 block w-full px-4 py-2 text-left text-sm" role="menuitem">
@@ -186,7 +186,7 @@
                                                 <?php endif; ?>
 
                                                 <?php if ($conversion['status'] === 'payable'): ?>
-                                                <form method="POST" action="/conversions/update-status" class="block w-full">
+                                                <form method="POST" action="/admin/conversions/update-status" class="block w-full">
                                                     <input type="hidden" name="id" value="<?= $conversion['id'] ?>">
                                                     <input type="hidden" name="status" value="paid">
                                                     <button type="submit" class="text-blue-700 hover:bg-gray-100 hover:text-blue-900 block w-full px-4 py-2 text-left text-sm" role="menuitem">

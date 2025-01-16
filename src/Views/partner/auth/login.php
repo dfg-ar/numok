@@ -6,7 +6,7 @@
         <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Partner Login</h2>
         <p class="mt-2 text-center text-sm text-gray-600">
             Or
-            <a href="/partner/register" class="font-medium text-indigo-600 hover:text-indigo-500">
+            <a href="/register" class="font-medium text-indigo-600 hover:text-indigo-500">
                 register for a new account
             </a>
         </p>
@@ -44,7 +44,7 @@
             </div>
             <?php unset($_SESSION['register_success']); endif; ?>
 
-            <form class="space-y-6" action="/partner/auth/login" method="POST">
+            <form class="space-y-6" action="/auth/login" method="POST">
                 <div>
                     <label for="email" class="block text-sm font-medium text-gray-700">
                         Email address

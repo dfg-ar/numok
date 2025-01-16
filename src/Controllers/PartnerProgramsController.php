@@ -37,7 +37,7 @@ class PartnerProgramsController extends PartnerBaseController {
 
     public function join(): void {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: /partner/programs');
+            header('Location: /programs');
             exit;
         }
 
@@ -52,7 +52,7 @@ class PartnerProgramsController extends PartnerBaseController {
 
         if (!$program) {
             $_SESSION['error'] = 'Invalid program selected';
-            header('Location: /partner/programs');
+            header('Location: /programs');
             exit;
         }
 
@@ -65,7 +65,7 @@ class PartnerProgramsController extends PartnerBaseController {
 
         if ($existing) {
             $_SESSION['error'] = 'You have already joined this program';
-            header('Location: /partner/programs');
+            header('Location: /programs');
             exit;
         }
 
@@ -85,7 +85,7 @@ class PartnerProgramsController extends PartnerBaseController {
             $_SESSION['error'] = 'Failed to join program. Please try again.';
         }
 
-        header('Location: /partner/programs');
+        header('Location: /programs');
         exit;
     }
 }

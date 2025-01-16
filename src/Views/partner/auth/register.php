@@ -3,7 +3,7 @@
         <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Create your partner account</h2>
         <p class="mt-2 text-center text-sm text-gray-600">
             Already registered?
-            <a href="/partner/login" class="font-medium text-indigo-600 hover:text-indigo-500">
+            <a href="/login" class="font-medium text-indigo-600 hover:text-indigo-500">
                 Sign in to your account
             </a>
         </p>
@@ -26,7 +26,7 @@
             </div>
             <?php unset($_SESSION['register_error']); endif; ?>
 
-            <form class="space-y-6" action="/partner/auth/register" method="POST">
+            <form class="space-y-6" action="/auth/register" method="POST">
                 <div>
                     <label for="company_name" class="block text-sm font-medium text-gray-700">
                         Company Name

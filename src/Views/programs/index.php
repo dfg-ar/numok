@@ -6,7 +6,7 @@
                 <p class="mt-2 text-sm text-gray-700">A list of all your affiliate programs and their performance.</p>
             </div>
             <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-                <a href="/programs/create" class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500">
+                <a href="/admin/programs/create" class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500">
                     Create Program
                 </a>
             </div>
@@ -50,7 +50,7 @@
             <h3 class="mt-2 text-sm font-medium text-gray-900">No programs</h3>
             <p class="mt-1 text-sm text-gray-500">Get started by creating your first affiliate program.</p>
             <div class="mt-6">
-                <a href="/programs/create" class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500">
+                <a href="/admin/programs/create" class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500">
                     Create Program
                 </a>
             </div>
@@ -114,7 +114,7 @@
                                     </span>
                                 </td>
                                 <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                                    <a class="btn" href="/programs/<?= $program['id'] ?>/integration">Integration</a>
+                                    <a class="btn" href="/admin/programs/<?= $program['id'] ?>/integration">Integration</a>
                                     <div x-data="{ open: false }" class="relative inline-block text-left">
                                         <button @click="open = !open" type="button" class="p-1 rounded-full hover:bg-gray-50">
                                             <svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
@@ -131,7 +131,7 @@
                                              tabindex="-1"
                                              style="display: none;">
                                             <div class="py-1" role="none">
-                                                <a href="/programs/<?= $program['id'] ?>/edit" 
+                                                <a href="/admin/programs/<?= $program['id'] ?>/edit" 
                                                    class="text-gray-700 group flex items-center px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900" 
                                                    role="menuitem">
                                                     <svg class="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500" viewBox="0 0 20 20" fill="currentColor">
@@ -140,7 +140,7 @@
                                                     </svg>
                                                     Edit
                                                 </a>
-                                                <form action="/programs/<?= $program['id'] ?>/delete" 
+                                                <form action="/admin/programs/<?= $program['id'] ?>/delete" 
                                                       method="POST" 
                                                       onsubmit="return confirm('Are you sure you want to delete this program?')" 
                                                       class="block w-full" 

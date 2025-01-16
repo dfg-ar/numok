@@ -120,9 +120,9 @@ Partners Programs is a many to many relation, a partner can create many tracking
 ## Roadmap
 
 ### Phase 1: Core Features
-- [ ] Admin dashboard
-- [ ] Affiliate portal
-- [ ] Stripe integration
+- [x] Admin dashboard
+- [x] Affiliate portal
+- [x] Stripe integration
 - [ ] JavaScript tracker
 - [ ] Basic installation flow
 

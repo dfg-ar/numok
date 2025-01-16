@@ -15,15 +15,15 @@
                 <div class="flex h-16 justify-between">
                     <div class="flex">
                         <div class="flex flex-shrink-0 items-center">
-                            <a href="/">
+                            <a href="/admin">
                                 <img src="/assets/images/numok-logo.png" alt="Numok" class="h-8" />
                             </a>
                         </div>
                         <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-                            <a href="/dashboard" class="<?= $path === 'dashboard' ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' ?> inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium">Dashboard</a>
-                            <a href="/programs" class="<?= $path === 'programs' ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' ?> inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium">Programs</a>
-                            <a href="/partners" class="<?= $path === 'partners' ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' ?> inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium">Partners</a>
-                            <a href="/conversions" class="<?= $path === 'conversions' ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' ?> inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium">Conversions</a>
+                            <a href="/admin/dashboard" class="<?= $path === 'dashboard' ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' ?> inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium">Dashboard</a>
+                            <a href="/admin/programs" class="<?= $path === 'programs' ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' ?> inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium">Programs</a>
+                            <a href="/admin/partners" class="<?= $path === 'partners' ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' ?> inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium">Partners</a>
+                            <a href="/admin/conversions" class="<?= $path === 'conversions' ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' ?> inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium">Conversions</a>
                         </div>
                     </div>
                     
@@ -52,9 +52,9 @@
                                     <strong class="text-gray-900"><?= htmlspecialchars($_SESSION['user_name'] ?? '') ?></strong>
                                 </div>
                                 <div class="border-t border-gray-100"></div>
-                                <a href="/settings" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Settings</a>
+                                <a href="/admin/settings" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Settings</a>
                                 <div class="border-t border-gray-100"></div>
-                                <a href="/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Sign out</a>
+                                <a href="/admin/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Sign out</a>
                             </div>
                         </div>
                     </div>
@@ -74,10 +74,10 @@
             <!-- Mobile menu -->
             <div class="sm:hidden" x-data="{ mobileMenuOpen: false }" x-show="mobileMenuOpen" style="display: none;">
                 <div class="space-y-1 pb-3 pt-2">
-                    <a href="/dashboard" class="<?= $path === 'dashboard' ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700' ?> block border-l-4 py-2 pl-3 pr-4 text-base font-medium">Dashboard</a>
-                    <a href="/programs" class="<?= $path === 'programs' ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700' ?> block border-l-4 py-2 pl-3 pr-4 text-base font-medium">Programs</a>
-                    <a href="/partners" class="<?= $path === 'partners' ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700' ?> block border-l-4 py-2 pl-3 pr-4 text-base font-medium">Partners</a>
-                    <a href="/conversions" class="<?= $path === 'conversions' ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700' ?> block border-l-4 py-2 pl-3 pr-4 text-base font-medium">Conversions</a>
+                    <a href="/admin/dashboard" class="<?= $path === 'dashboard' ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700' ?> block border-l-4 py-2 pl-3 pr-4 text-base font-medium">Dashboard</a>
+                    <a href="/admin/programs" class="<?= $path === 'programs' ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700' ?> block border-l-4 py-2 pl-3 pr-4 text-base font-medium">Programs</a>
+                    <a href="/admin/partners" class="<?= $path === 'partners' ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700' ?> block border-l-4 py-2 pl-3 pr-4 text-base font-medium">Partners</a>
+                    <a href="/admin/conversions" class="<?= $path === 'conversions' ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700' ?> block border-l-4 py-2 pl-3 pr-4 text-base font-medium">Conversions</a>
                 </div>
                 <div class="border-t border-gray-200 pb-3 pt-4">
                     <div class="flex items-center px-4">
@@ -92,8 +92,8 @@
                         </div>
                     </div>
                     <div class="mt-3 space-y-1">
-                        <a href="/settings" class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800">Settings</a>
-                        <a href="/logout" class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800">Sign out</a>
+                        <a href="/admin/settings" class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800">Settings</a>
+                        <a href="/admin/logout" class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800">Sign out</a>
                     </div>
                 </div>
             </div>

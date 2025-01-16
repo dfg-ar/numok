@@ -6,7 +6,7 @@
                 <p class="mt-2 text-sm text-gray-700">A list of all your affiliate partners and their performance.</p>
             </div>
             <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-                <a href="/partners/create" class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500">
+                <a href="/admin/partners/create" class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500">
                     Create Partner
                 </a>
             </div>
@@ -50,7 +50,7 @@
             <h3 class="mt-2 text-sm font-medium text-gray-900">No partners</h3>
             <p class="mt-1 text-sm text-gray-500">Get started by creating your first partner.</p>
             <div class="mt-6">
-                <a href="/partners/create" class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500">
+                <a href="/admin/partners/create" class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500">
                     Create Partner
                 </a>
             </div>
@@ -140,7 +140,7 @@
                                              tabindex="-1"
                                              style="display: none;">
                                             <div class="py-1" role="none">
-                                                <a href="/partners/<?= $partner['id'] ?>/edit" 
+                                                <a href="/admin/partners/<?= $partner['id'] ?>/edit" 
                                                    class="text-gray-700 group flex items-center px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900" 
                                                    role="menuitem">
                                                     <svg class="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500" viewBox="0 0 20 20" fill="currentColor">
@@ -151,7 +151,7 @@
                                                 </a>
 
                                                 <?php if ($partner['status'] === 'pending'): ?>
-                                                <form action="/partners/<?= $partner['id'] ?>/update" 
+                                                <form action="/admin/partners/<?= $partner['id'] ?>/update" 
                                                       method="POST" 
                                                       class="block w-full" 
                                                       role="none">
@@ -168,7 +168,7 @@
                                                 <?php endif; ?>
 
                                                 <?php if ($partner['status'] === 'active'): ?>
-                                                <form action="/partners/<?= $partner['id'] ?>/update" 
+                                                <form action="/admin/partners/<?= $partner['id'] ?>/update" 
                                                       method="POST" 
                                                       class="block w-full" 
                                                       role="none">
@@ -185,7 +185,7 @@
                                                 </form>
                                                 <?php endif; ?>
 
-                                                <form action="/partners/<?= $partner['id'] ?>/delete" 
+                                                <form action="/admin/partners/<?= $partner['id'] ?>/delete" 
                                                       method="POST" 
                                                       onsubmit="return confirm('Are you sure you want to delete this partner?')" 
                                                       class="block w-full border-t border-gray-100" 

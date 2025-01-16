@@ -38,7 +38,7 @@ class PartnersController extends Controller {
 
     public function store(): void {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: /partners');
+            header('Location: /admin/partners');
             exit;
         }
 
@@ -46,7 +46,7 @@ class PartnersController extends Controller {
         $email = filter_var($_POST['email'] ?? '', FILTER_VALIDATE_EMAIL);
         if (!$email) {
             $_SESSION['error'] = 'Valid email address is required';
-            header('Location: /partners/create');
+            header('Location: /admin/partners/create');
             exit;
         }
 
@@ -58,7 +58,7 @@ class PartnersController extends Controller {
 
         if ($existing) {
             $_SESSION['error'] = 'A partner with this email already exists';
-            header('Location: /partners/create');
+            header('Location: /admin/partners/create');
             exit;
         }
 
@@ -78,7 +78,7 @@ class PartnersController extends Controller {
             $_SESSION['error'] = 'Failed to create partner. Please try again.';
         }
 
-        header('Location: /partners');
+        header('Location: /admin/partners');
         exit;
     }
 
@@ -90,7 +90,7 @@ class PartnersController extends Controller {
 
         if (!$partner) {
             $_SESSION['error'] = 'Partner not found';
-            header('Location: /partners');
+            header('Location: /admin/partners');
             exit;
         }
 
@@ -128,7 +128,7 @@ class PartnersController extends Controller {
 
     public function update(int $id): void {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: /partners');
+            header('Location: /admin/partners');
             exit;
         }
 
@@ -140,16 +140,24 @@ class PartnersController extends Controller {
 
         if (!$partner) {
             $_SESSION['error'] = 'Partner not found';
-            header('Location: /partners');
+            header('Location: /admin/partners');
             exit;
         }
 
         $data = [
-            'company_name' => $_POST['company_name'] ?? '',
-            'contact_name' => $_POST['contact_name'] ?? '',
             'payment_email' => $_POST['payment_email'] ?? '',
             'status' => $_POST['status'] ?? 'pending'
         ];
+
+        if (!empty($_POST['company_name']))
+        {
+            $data['company_name'] = $_POST['company_name'] ?? '';
+        }
+        
+        if (!empty($_POST['contact_name']))
+        {
+            $data['contact_name'] = $_POST['contact_name'] ?? '';
+        }
 
         try {
             Database::update('partners', $data, 'id = ?', [$id]);
@@ -158,7 +166,7 @@ class PartnersController extends Controller {
             $_SESSION['error'] = 'Failed to update partner. Please try again.';
         }
 
-        header('Location: /partners');
+        header('Location: /admin/partners');
         exit;
     }
 
@@ -173,13 +181,13 @@ class PartnersController extends Controller {
             $_SESSION['error'] = 'Failed to delete partner. Please try again.';
         }
 
-        header('Location: /partners');
+        header('Location: /admin/partners');
         exit;
     }
 
     public function assignProgram(int $id): void {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: /partners/' . $id . '/edit');
+            header('Location: /admin/partners/' . $id . '/edit');
             exit;
         }
 
@@ -193,7 +201,7 @@ class PartnersController extends Controller {
 
         if (!$program) {
             $_SESSION['error'] = 'Invalid program selected';
-            header('Location: /partners/' . $id . '/edit');
+            header('Location: /admin/partners/' . $id . '/edit');
             exit;
         }
 
@@ -212,7 +220,7 @@ class PartnersController extends Controller {
             $_SESSION['error'] = 'Failed to assign program. Please try again.';
         }
 
-        header('Location: /partners/' . $id . '/edit');
+        header('Location: /admin/partners/' . $id . '/edit');
         exit;
     }
 }

@@ -23,7 +23,7 @@ $path = parse_url($path, PHP_URL_PATH);
 $path = trim($path, '/');
 
 // Define routes
-$routes = [
+/*$routes = [
     // Core routes
     '' => ['DashboardController', 'index'],
     'dashboard' => ['DashboardController', 'index'],
@@ -79,6 +79,61 @@ $routes = [
     // Partner program routes
     'partner/programs' => ['PartnerProgramsController', 'index'],
     'partner/programs/join' => ['PartnerProgramsController', 'join'],
+];*/
+
+// Define routes
+$routes = [
+    // Partner routes (root level)
+    '' => ['PartnerDashboardController', 'index'],
+    'login' => ['PartnerAuthController', 'index'],
+    'auth/login' => ['PartnerAuthController', 'login'],
+    'register' => ['PartnerAuthController', 'register'],
+    'logout' => ['PartnerAuthController', 'logout'],
+    'dashboard' => ['PartnerDashboardController', 'index'],
+    'tracking' => ['PartnerTrackingController', 'index'],
+    'earnings' => ['PartnerEarningsController', 'index'],
+    'programs' => ['PartnerProgramsController', 'index'],
+    'programs/join' => ['PartnerProgramsController', 'join'],
+
+    // Admin routes (under /admin)
+    'admin' => ['DashboardController', 'index'],
+    'admin/login' => ['AuthController', 'index'],
+    'admin/auth/login' => ['AuthController', 'login'],
+    'admin/logout' => ['AuthController', 'logout'],
+    'admin/dashboard' => ['DashboardController', 'index'],
+    'admin/settings' => ['SettingsController', 'index'],
+    'admin/settings/update' => ['SettingsController', 'update'],
+    'admin/settings/test-connection' => ['SettingsController', 'testConnection'],
+    
+    // Programs routes
+    'admin/programs' => ['ProgramsController', 'index'],
+    'admin/programs/create' => ['ProgramsController', 'create'],
+    'admin/programs/store' => ['ProgramsController', 'store'],
+    'admin/programs/(\d+)/edit' => ['ProgramsController', 'edit'],
+    'admin/programs/(\d+)/integration' => ['ProgramsController', 'integration'],
+    'admin/programs/(\d+)/update' => ['ProgramsController', 'update'],
+    'admin/programs/(\d+)/delete' => ['ProgramsController', 'delete'],
+
+    // Partners routes
+    'admin/partners' => ['PartnersController', 'index'],
+    'admin/partners/create' => ['PartnersController', 'create'],
+    'admin/partners/store' => ['PartnersController', 'store'],
+    'admin/partners/(\d+)/edit' => ['PartnersController', 'edit'],
+    'admin/partners/(\d+)/update' => ['PartnersController', 'update'],
+    'admin/partners/(\d+)/delete' => ['PartnersController', 'delete'],
+    'admin/partners/(\d+)/assign-program' => ['PartnersController', 'assignProgram'],
+
+    // Conversions routes
+    'admin/conversions' => ['ConversionsController', 'index'],
+    'admin/conversions/update-status' => ['ConversionsController', 'updateStatus'],
+    'admin/conversions/export' => ['ConversionsController', 'export'],
+
+    // API routes
+    'api/tracking/config/(\d+)' => ['TrackingController', 'config'],
+    'api/tracking/click' => ['TrackingController', 'click'],
+
+    // Webhook routes
+    'webhook/stripe' => ['WebhookController', 'stripeWebhook'],
 ];
 
 // Check if route exists or matches a pattern

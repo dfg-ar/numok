@@ -8,7 +8,7 @@ class AuthController extends Controller {
     public function index(): void {
         // If already logged in, redirect to dashboard
         if ($this->isLoggedIn()) {
-            header('Location: /dashboard');
+            header('Location: /admin/dashboard');
             exit;
         }
         
@@ -23,7 +23,7 @@ class AuthController extends Controller {
 
     public function login(): void {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: /login');
+            header('Location: /admin/login');
             exit;
         }
 
@@ -32,7 +32,7 @@ class AuthController extends Controller {
 
         if (empty($email) || empty($password)) {
             $_SESSION['login_error'] = 'Email and password are required';
-            header('Location: /login');
+            header('Location: /admin/login');
             exit;
         }
 
@@ -54,13 +54,13 @@ class AuthController extends Controller {
 
         if (!$user) {
             $_SESSION['login_error'] = 'User not found';
-            header('Location: /login');
+            header('Location: /admin/login');
             exit;
         }
 
         if (!password_verify($password, $user['password'])) {
             $_SESSION['login_error'] = 'Invalid password';
-            header('Location: /login');
+            header('Location: /admin/login');
             exit;
         }
 
@@ -73,7 +73,7 @@ class AuthController extends Controller {
         // Regenerate session ID for security
         session_regenerate_id(true);
         
-        header('Location: /dashboard');
+        header('Location: /admin/dashboard');
         exit;
     }
 
@@ -89,7 +89,7 @@ class AuthController extends Controller {
         // Destroy session
         session_destroy();
         
-        header('Location: /login');
+        header('Location: /admin/login');
         exit;
     }
 

@@ -11,7 +11,7 @@ class PartnerMiddleware {
 
         // Check if partner is logged in
         if (!isset($_SESSION['partner_id'])) {
-            header('Location: /partner/login');
+            header('Location: /login');
             exit;
         }
 
@@ -29,7 +29,7 @@ class PartnerMiddleware {
             }
             session_destroy();
             
-            header('Location: /partner/login');
+            header('Location: /login');
             exit;
         }
     }

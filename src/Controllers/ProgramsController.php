@@ -38,7 +38,7 @@ class ProgramsController extends Controller {
 
     public function store(): void {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: /programs');
+            header('Location: /admin/programs');
             exit;
         }
 
@@ -87,7 +87,7 @@ class ProgramsController extends Controller {
             $_SESSION['error'] = 'Failed to create program. Please try again.';
         }
 
-        header('Location: /programs');
+        header('Location: /admin/programs');
         exit;
     }
 
@@ -99,7 +99,7 @@ class ProgramsController extends Controller {
 
         if (!$program) {
             $_SESSION['error'] = 'Program not found';
-            header('Location: /programs');
+            header('Location: /admin/programs');
             exit;
         }
 
@@ -117,7 +117,7 @@ class ProgramsController extends Controller {
 
         if (!$program) {
             $_SESSION['error'] = 'Program not found or inactive';
-            header('Location: /programs');
+            header('Location: /admin/programs');
             exit;
         }
 
@@ -133,7 +133,7 @@ class ProgramsController extends Controller {
 
     public function update(int $id): void {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: /programs');
+            header('Location: /admin/programs');
             exit;
         }
 
@@ -145,7 +145,7 @@ class ProgramsController extends Controller {
 
         if (!$program) {
             $_SESSION['error'] = 'Program not found';
-            header('Location: /programs');
+            header('Location: /admin/programs');
             exit;
         }
 
@@ -183,7 +183,7 @@ class ProgramsController extends Controller {
             $_SESSION['error'] = 'Failed to update program. Please try again.';
         }
 
-        header('Location: /programs');
+        header('Location: /admin/programs');
         exit;
     }
 
@@ -198,7 +198,7 @@ class ProgramsController extends Controller {
             $_SESSION['error'] = 'Failed to delete program. Please try again.';
         }
 
-        header('Location: /programs');
+        header('Location: /admin/programs');
         exit;
     }
 }
