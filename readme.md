@@ -2,136 +2,239 @@
 
 An open source affiliate program that connects to Stripe to track payments.
 
-## Technical Architecture
+Installation Guide
+==================
 
-We'll use plain PHP for the backend, MySQL for the database. We should aim for this to be as compatible as possible.
+Requirements
+------------
 
-For the presentation layer, we'll use plain HTML, JS and CSS. We can use TailwindUI.
+-   PHP 8.1 or higher
+-   MySQL 5.7 or higher
+-   Apache/Nginx web server
+-   Composer
+-   SSL certificate (required for Stripe integration)
+-   Stripe account
 
-Regarding style, I'd like to follow a style like Github.com.
+Step-by-Step Installation
+-------------------------
 
-### Tracking Flow
+### 1\. Prepare Your Server
 
-1. Affiliate Link Structure
-   - Base URL + `?via=CODE&sid=value1&sid1=value2...`
-   - Sub IDs (sid through sid5) are optional parameters
+bash
 
-2. Cookie Storage
-   - JS tracker captures all URL parameters
-   - Stores in cookie with configured expiration
-   - No database storage of sub IDs
+Copy
 
-3. Stripe Integration
-   - All URL parameters sent as metadata during checkout
-   - Webhook endpoint receives payment notification
-   - Attribution matches via `via` parameter only
-   - Sub IDs retrieved from Stripe metadata for reporting
-   - Store our tracking code with a numok_ prefix to avoid data collission
+`# Install required PHP extensions
+php -v  # Verify PHP version
+php -m  # Check for required extensions:
+        # - PDO
+        # - PDO_MySQL
+        # - json
+        # - mbstring`
 
-4. Postback System
-   - Sends conversion data to affiliate's postback URL
-   - Includes all original sub IDs from Stripe metadata
-   - No database queries needed for sub ID data
+### 2\. Get the Code
 
-### Entities
+bash
 
-Keep it as minimal as possible to begin with: 
+Copy
 
-- Users: Admins or regular users running the affiliate program. Admins will be able to modify Stripe settings and create new users. Users will just be able to operate the partners, programs, conversions and payments.
-- Partners (Affiliates): Users who sign up to apply to run the programs
-- Programs: The definition of the reward for bringing paying customers, landing page, cookie duration for attribution, percentage or fixed amount, is it recurring or one time, number of days to reward since first payment
-- Conversions: When a payment is registered in Stripe, it appears here with a status (pending, payable, rejected, paid), we should also store the payment information and the comision reward
-- Settings: All the system wide settings, like Stripe Secret Key, payment terms, domain (if needed), etc
-- Clicks: Optional, if the system is enabled to track clicks, we will store them here, and send the click ID to Stripe
-- Logs: If logging is enabled, it will be usefull to have a detailed log of all the actions that happened without user intervention (conversion tracking, webhooks, postbacks triggered, etc)
+`# Clone the repository
+git clone https://github.com/numok/numok.git
+cd numok
 
-Partners Programs is a many to many relation, a partner can create many tracking codes for each program. We should store the postback URL in this relation.
+# Install dependencies
+composer install`
 
-### Installation Process
+### 3\. Database Setup
 
-#### Self-hosted Version
-1. Download Release Package
-2. Upload to Web Server
-3. Create MySQL Database
-4. Run Web-based Installer
-   - Database configuration
-   - Admin account creation
-   - Stripe API setup
-5. Complete Configuration
-   - Set up first program
-   - Configure commission rules
-   - Generate tracking code
+bash
 
-#### Hosted Service (numok.com)
-- Individual instance per customer
-- Automated instance provisioning
-- Custom domain support
-- Managed updates and maintenance
+Copy
 
-### Integration Flows
+`# Create a new MySQL database
+mysql -u root -p
+CREATE DATABASE numok CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;`
 
-#### 1. Stripe Integration
-- Enter Stripe's Secret key
-- Webhook endpoint for real-time payment notifications
-- Commission calculation service
-- Payment status tracking
-- Automated affiliate payments
-- Metadata storage for tracking parameters
+### 4\. Configuration
 
-```
+1.  Copy the example configuration file:
 
-### Security Considerations
+    bash
 
-1. **Data Protection**
-   - Encrypted storage for sensitive data
-   - Regular security audits
-   - GDPR compliance measures
+    Copy
 
-2. **Authentication**
-   - JWT-based API authentication
-   - CSRF protection
-   - Rate limiting
+    `cp config/config.example.php config/config.php`
 
-3. **Affiliate Verification**
-   - Manual review process
-   - Fraud detection
-   - Payment verification
+2.  Edit `config/config.php` with your settings:
 
-## Development Guidelines
+    php
 
-### Code Style
-- PSR-12 for PHP
-- ESLint with recommended rules for JavaScript
-- Prettier for formatting
-- Git commit conventions
+    Copy
 
-### Testing
-- PHPUnit for backend testing
-- Jest for JavaScript testing
-- E2E testing with Cypress
-- CI/CD pipeline with GitHub Actions
+    `return [
+        'db' => [
+            'host' => 'localhost',
+            'database' => 'numok',
+            'username' => 'your_db_user',
+            'password' => 'your_db_password'
+        ],
+        'app' => [
+            'url' => 'https://your-domain.com'
+        ]
+    ];`
 
-### Documentation
-- OpenAPI/Swagger for API documentation
-- PHPDoc for PHP documentation
-- JSDoc for JavaScript documentation
-- Markdown for user documentation
+### 5\. Database Migration
 
-## Roadmap
+bash
 
-### Phase 1: Core Features
-- [x] Admin dashboard
-- [x] Affiliate portal
-- [x] Stripe integration
-- [ ] JavaScript tracker
-- [ ] Basic installation flow
+Copy
 
-### Phase 2: Advanced Features
-- [ ] Postback system
-- [ ] Advanced analytics
+`# Import the database structure
+mysql -u your_db_user -p numok < database/numok-0-1.sql`
 
-### Phase 3: Hosted Service
-- [ ] Instance provisioning system
-- [ ] Custom domain management
-- [ ] Billing system
-- [ ] LEV3R syndication (To be defined)
+### 6\. Web Server Configuration
+
+#### Apache
+
+Ensure mod_rewrite is enabled and `.htaccess` is working:
+
+apache
+
+Copy
+
+`<VirtualHost *:80>
+    DocumentRoot /path/to/numok/public
+    <Directory /path/to/numok/public>
+        AllowOverride All
+        Require all granted
+    </Directory>
+</VirtualHost>`
+
+#### Nginx
+
+nginx
+
+Copy
+
+`server {
+    listen  80;
+    server_name your-domain.com;
+    root /path/to/numok/public;
+
+    location / {
+        try_files  $uri  $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+}`
+
+### 7\. File Permissions
+
+bash
+
+Copy
+
+`# Set proper permissions
+chmod -R 755 public/
+chmod -R 755 src/
+chmod -R 777 public/tracking/`
+
+### 8\. Create Admin Account
+
+Since Numok separates admins (users table) from partners (partners table), you'll need to create the first admin account directly in the database:
+
+sql
+
+Copy
+
+`-- Insert the first admin user
+INSERT INTO users (
+    email,
+    password,
+    name,
+    is_admin,
+    created_at
+) VALUES (
+    'admin@yourdomain.com',
+    -- This creates a password hash for 'admin123'
+    '$2y$10$YW3BVlwXSWBIyQ1wl55m1eEDaXXqn9D9Q0qNwPAmtZAVJc1HgmsIO',
+    'Admin User',
+    1,
+    CURRENT_TIMESTAMP
+);`
+After running this SQL:
+1\.  Access `/admin/login`
+2\.  Login with:
+    -   Email: `admin@yourdomain.com`
+    -   Password: `admin123`
+3\.  **Important**: Immediately go to your profile settings and change your password
+
+### 9\. Stripe Integration
+
+1.  Log in to your admin account
+2.  Go to Settings
+3.  Enter your Stripe credentials:
+    -   Secret Key
+    -   Webhook Secret
+4.  Configure your webhook endpoint in Stripe's dashboard:
+    -   URL: `https://your-domain.com/webhook/stripe`
+    -   Events to send:
+        -   `checkout.session.completed`
+        -   `payment_intent.succeeded`
+        -   `invoice.paid`
+
+Security Checklist
+------------------
+
+-   [ ]  Use HTTPS only
+-   [ ]  Set secure file permissions
+-   [ ]  Change default database credentials
+-   [ ]  Enable error reporting only in development
+-   [ ]  Configure PHP settings properly
+-   [ ]  Set up SSL certificate
+-   [ ]  Configure server firewall
+
+Troubleshooting
+---------------
+
+### Common Issues
+
+1.  **500 Internal Server Error**
+    -   Check PHP error logs
+    -   Verify file permissions
+    -   Confirm .htaccess is working
+2.  **Database Connection Failed**
+    -   Verify database credentials
+    -   Check MySQL server is running
+    -   Confirm PHP PDO extension is installed
+3.  **Webhook Errors**
+    -   Verify SSL certificate is valid
+    -   Check Stripe webhook secret
+    -   Confirm webhook URL is accessible
+
+Support
+-------
+
+-   GitHub Issues: Report bugs and feature requests
+-   Documentation: [Link to documentation]
+-   Community Forum: [Link to forum]
+
+Contributing
+------------
+
+See <CONTRIBUTING.md> for details on:
+
+-   Code of Conduct
+-   Development setup
+-   Testing
+-   Pull request process
+
+License
+-------
+
+This project is licensed under the MIT License - see the <LICENSE> file for details.
