@@ -29,6 +29,7 @@ $routes = [
     'login' => ['PartnerAuthController', 'index'],
     'auth/login' => ['PartnerAuthController', 'login'],
     'register' => ['PartnerAuthController', 'register'],
+    'auth/register' => ['PartnerAuthController', 'store'],
     'settings' => ['PartnerProfileController', 'index'],
     'settings/update' => ['PartnerProfileController', 'update'],
     'logout' => ['PartnerAuthController', 'logout'],
