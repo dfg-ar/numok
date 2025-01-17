@@ -41,52 +41,40 @@ class ProgramsController extends Controller {
             header('Location: /admin/programs');
             exit;
         }
-
-        $name = $_POST['name'] ?? '';
-        $description = $_POST['description'] ?? '';
-        $commission_type = $_POST['commission_type'] ?? 'percentage';
-        $commission_value = floatval($_POST['commission_value'] ?? 0);
-        $cookie_days = intval($_POST['cookie_days'] ?? 30);
-        $is_recurring = isset($_POST['is_recurring']) ? 1 : 0;
-        $reward_days = intval($_POST['reward_days'] ?? 0);
-        $landing_page = $_POST['landing_page'] ?? '';
-
-        try {
-            Database::insert('programs', [
-                'name' => $name,
-                'description' => $description,
-                'commission_type' => $commission_type,
-                'commission_value' => $commission_value,
-                'cookie_days' => $cookie_days,
-                'is_recurring' => $is_recurring,
-                'reward_days' => $reward_days,
-                'landing_page' => $landing_page,
-                'status' => 'active'
-            ]);
-
-            $_SESSION['success'] = 'Program created successfully.';
-        } catch (\Exception $e) {
-            $_SESSION['error'] = 'Failed to create program. Please try again.';
-        }
-
+    
+        $data = [
+            'name' => $_POST['name'] ?? '',
+            'description' => $_POST['description'] ?? '',
+            'commission_type' => $_POST['commission_type'] ?? 'percentage',
+            'commission_value' => floatval($_POST['commission_value'] ?? 0),
+            'cookie_days' => intval($_POST['cookie_days'] ?? 30),
+            'is_recurring' => isset($_POST['is_recurring']) ? 1 : 0,
+            'reward_days' => intval($_POST['reward_days'] ?? 0),
+            'landing_page' => $_POST['landing_page'] ?? '',
+            'status' => 'active'
+        ];
+    
         try {
             Database::transaction(function() use ($data) {
+                // Insert the program
                 $id = Database::insert('programs', $data);
                 
-                // Generate tracking script for new program
+                // Get the created program
                 $program = Database::query(
                     "SELECT * FROM programs WHERE id = ?",
                     [$id]
                 )->fetch();
                 
+                // Generate tracking script
                 ProgramScriptGenerator::generate($program);
             });
-
+    
             $_SESSION['success'] = 'Program created successfully.';
         } catch (\Exception $e) {
+            error_log("Failed to create program: " . $e->getMessage());
             $_SESSION['error'] = 'Failed to create program. Please try again.';
         }
-
+    
         header('Location: /admin/programs');
         exit;
     }
