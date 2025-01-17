@@ -212,82 +212,88 @@ class WebhookController extends Controller {
         $this->logEvent('invoice_paid_processing', [
             'invoice_id' => $invoice->id,
             'subscription_id' => $invoice->subscription,
-            'amount' => $invoice->amount_paid
+            'amount' => $invoice->amount_paid,
+            'subscription_metadata' => $invoice->subscription_details->metadata ?? null
         ]);
     
-        // Need to look up the original payment to get tracking info
-        $originalPaymentId = $invoice->subscription;
-        
-        if (!$originalPaymentId) {
-            $this->logEvent('invoice_paid_no_subscription', $invoice);
+        // Get tracking code from subscription metadata
+        $metadata = $invoice->subscription_details->metadata ?? new \stdClass();
+        $trackingCode = $metadata->numok_tracking_code ?? null;
+    
+        // If no tracking code in subscription metadata, try line items
+        if (!$trackingCode && !empty($invoice->lines->data)) {
+            $lineMetadata = $invoice->lines->data[0]->metadata ?? new \stdClass();
+            $trackingCode = $lineMetadata->numok_tracking_code ?? null;
+        }
+    
+        if (!$trackingCode) {
+            $this->logEvent('invoice_paid_no_tracking', $invoice);
             return;
         }
     
-        // Get the original conversion to find partner program
-        $originalConversion = Database::query(
-            "SELECT c.*, pp.tracking_code, pp.id as partner_program_id, 
-                    p.is_recurring, p.commission_type, p.commission_value 
-             FROM conversions c
-             JOIN partner_programs pp ON c.partner_program_id = pp.id
+        // Get partner program
+        $partnerProgram = Database::query(
+            "SELECT pp.*, p.reward_days, p.is_recurring, p.commission_type, p.commission_value 
+             FROM partner_programs pp
              JOIN programs p ON pp.program_id = p.id
-             WHERE c.stripe_payment_id = ?
+             WHERE pp.tracking_code = ? 
              AND pp.status = 'active'
              AND p.status = 'active'
              LIMIT 1",
-            [$originalPaymentId]
+            [$trackingCode]
         )->fetch();
     
-        if (!$originalConversion) {
-            $this->logEvent('invoice_paid_no_original_conversion', [
+        if (!$partnerProgram) {
+            $this->logEvent('invoice_paid_invalid_tracking', [
                 'invoice_id' => $invoice->id,
-                'subscription_id' => $originalPaymentId
+                'tracking_code' => $trackingCode
             ]);
             return;
         }
     
-        if (!$originalConversion['is_recurring']) {
+        if (!$partnerProgram['is_recurring']) {
             $this->logEvent('invoice_paid_no_recurring', [
                 'invoice_id' => $invoice->id,
-                'original_conversion_id' => $originalConversion['id']
+                'partner_program' => $partnerProgram
             ]);
             return;
         }
-    
-        // Log found original conversion
-        $this->logEvent('original_conversion_found', [
-            'invoice_id' => $invoice->id,
-            'original_conversion' => $originalConversion
-        ]);
     
         // Calculate amount in dollars
         $amount = $invoice->amount_paid / 100;
     
-        // Calculate commission based on program settings
-        $commission = $this->calculateCommission($amount, $originalConversion);
+        // Calculate commission
+        $commission = $this->calculateCommission($amount, $partnerProgram);
     
-        // Determine status (use same logic as original conversion)
-        $status = $originalConversion['reward_days'] > 0 ? 'pending' : 'payable';
+        // Determine status
+        $status = $partnerProgram['reward_days'] > 0 ? 'pending' : 'payable';
     
         try {
-            // Create new conversion for the recurring payment
+            // Create conversion for the subscription payment
             Database::insert('conversions', [
-                'partner_program_id' => $originalConversion['partner_program_id'],
-                'stripe_payment_id' => $invoice->payment_intent, // Use the new payment intent ID
+                'partner_program_id' => $partnerProgram['id'],
+                'stripe_payment_id' => $invoice->payment_intent,
                 'amount' => $amount,
                 'commission_amount' => $commission,
                 'status' => $status,
                 'customer_email' => $invoice->customer_email ?? null,
-                'metadata' => $originalConversion['metadata'], // Maintain the original metadata
+                'metadata' => json_encode([
+                    'sid' => $metadata->numok_sid ?? null,
+                    'sid2' => $metadata->numok_sid2 ?? null,
+                    'sid3' => $metadata->numok_sid3 ?? null,
+                    'subscription_id' => $invoice->subscription
+                ])
             ]);
     
-            $this->logEvent('recurring_conversion_created', [
+            $this->logEvent('subscription_conversion_created', [
                 'invoice_id' => $invoice->id,
-                'original_conversion_id' => $originalConversion['id'],
+                'tracking_code' => $trackingCode,
                 'amount' => $amount,
-                'commission' => $commission
+                'commission' => $commission,
+                'subscription_id' => $invoice->subscription
             ]);
         } catch (\Exception $e) {
-            $this->logEvent('recurring_conversion_creation_failed', [
+            $this->logEvent('subscription_conversion_failed', [
                 'error' => $e->getMessage(),
                 'invoice_id' => $invoice->id,
                 'stack_trace' => $e->getTraceAsString()
