@@ -47,7 +47,7 @@ class ProgramScriptGenerator {
                 const trackingEnabled = await this.checkTrackingEnabled();
                 if (!trackingEnabled) return;
 
-                await fetch(`\${API_DOMAIN}/api/tracking/click`, {
+                await fetch(`https://\${API_DOMAIN}/api/tracking/click`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
@@ -59,7 +59,7 @@ class ProgramScriptGenerator {
 
         async checkTrackingEnabled() {
             try {
-                const response = await fetch(`\${API_DOMAIN}/api/tracking/config/\${PROGRAM_ID}`);
+                const response = await fetch(`https://\${API_DOMAIN}/api/tracking/config/\${PROGRAM_ID}`);
                 const config = await response.json();
                 return config.track_clicks || false;
             } catch {
