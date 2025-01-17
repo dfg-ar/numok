@@ -139,7 +139,7 @@ INSERT INTO users (
 ) VALUES (
     'admin@yourdomain.com',
     -- This creates a password hash for 'admin123'
-    '$2y$10$YW3BVlwXSWBIyQ1wl55m1eEDaXXqn9D9Q0qNwPAmtZAVJc1HgmsIO',
+    '$2y$10$bLQ3Qd64NRSxvc7A2wKJAe/ocgCCkB5jbyC11I1XklnjDClzO6vpK',
     'Admin User',
     1,
     CURRENT_TIMESTAMP
