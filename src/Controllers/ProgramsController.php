@@ -66,7 +66,7 @@ class ProgramsController extends Controller {
                 )->fetch();
                 
                 // Generate tracking script
-                ProgramScriptGenerator::generate($program);
+                ProgramScriptGenerator::generate($program, $_SERVER['HTTP_HOST']);
             });
     
             $_SESSION['success'] = 'Program created successfully.';
@@ -162,7 +162,7 @@ class ProgramsController extends Controller {
                 )->fetch();
                 
                 // Generate tracking script
-                ProgramScriptGenerator::generate($program);
+                ProgramScriptGenerator::generate($program, $_SERVER['HTTP_HOST']);
             });
 
             $_SESSION['success'] = 'Program updated successfully.';

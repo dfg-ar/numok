@@ -3,12 +3,16 @@
 namespace Numok\Services;
 
 class ProgramScriptGenerator {
-    public static function generate(array $program): bool {
+    public static function generate(array $program, string $domain): bool {
+        // Ensure domain doesn't end with a slash
+        $domain = rtrim($domain, '/');
+        
         $script = <<<JAVASCRIPT
 (function() {
     const COOKIE_NAME = 'numok_tracking';
     const COOKIE_DAYS = {$program['cookie_days']};
     const PROGRAM_ID = {$program['id']};
+    const API_DOMAIN = '{$domain}';
 
     class NumokTracker {
         constructor() {
@@ -43,7 +47,7 @@ class ProgramScriptGenerator {
                 const trackingEnabled = await this.checkTrackingEnabled();
                 if (!trackingEnabled) return;
 
-                await fetch('/api/tracking/click', {
+                await fetch(`\${API_DOMAIN}/api/tracking/click`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
@@ -55,7 +59,7 @@ class ProgramScriptGenerator {
 
         async checkTrackingEnabled() {
             try {
-                const response = await fetch(`/api/tracking/config/\${PROGRAM_ID}`);
+                const response = await fetch(`\${API_DOMAIN}/api/tracking/config/\${PROGRAM_ID}`);
                 const config = await response.json();
                 return config.track_clicks || false;
             } catch {
