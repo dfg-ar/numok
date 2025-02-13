@@ -45,6 +45,7 @@ class ProgramsController extends Controller {
         $data = [
             'name' => $_POST['name'] ?? '',
             'description' => $_POST['description'] ?? '',
+            'terms' => $_POST['terms'] ?? null,
             'commission_type' => $_POST['commission_type'] ?? 'percentage',
             'commission_value' => floatval($_POST['commission_value'] ?? 0),
             'cookie_days' => intval($_POST['cookie_days'] ?? 30),

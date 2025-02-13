@@ -6,7 +6,7 @@ session_start();
 
 // Initialize error reporting for development
 error_reporting(E_ALL);
-ini_set('display_errors', '1');
+ini_set('display_errors', '0');
 
 // Define root path
 define('ROOT_PATH', dirname(__DIR__));

@@ -69,6 +69,19 @@ class PartnerProgramsController extends PartnerBaseController {
             exit;
         }
 
+        // Store terms acceptance details
+        if (!empty($program['terms'])) {
+            Database::update(
+                'partner_programs',
+                [
+                    'terms_accepted' => date('Y-m-d H:i:s'),
+                    'terms_accepted_ip' => $_SERVER['REMOTE_ADDR']
+                ],
+                'partner_id = ? AND program_id = ?',
+                [$partnerId, $programId]
+            );
+        }
+
         // Generate unique tracking code
         $trackingCode = bin2hex(random_bytes(8));
 

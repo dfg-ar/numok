@@ -47,6 +47,45 @@
                             <p class="mt-3 text-sm leading-6 text-gray-600">Write a few sentences describing your program to partners.</p>
                         </div>
 
+                        <div class="col-span-full">
+                            <label for="terms" class="block text-sm font-medium leading-6 text-gray-900">Program Terms</label>
+                            <div class="mt-2">
+                                <textarea id="terms" name="terms" rows="6" 
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-3"><?= htmlspecialchars($program['terms'] ?? '') ?>Affiliate Program Terms & Conditions
+By joining the Affiliate Program ("Program"), you agree to comply with the following terms and conditions.
+
+1. Eligibility
+You must be at least 18 years old to participate.
+Participation is subject to approval by the Program Admin, who may accept or reject any affiliate at their sole discretion.
+
+2. Prohibited Activities
+You agree NOT to:
+
+Engage in fraudulent, deceptive, or misleading practices.
+Use spam, unsolicited emails, or aggressive marketing tactics.
+Promote content that is illegal, violent, hateful, or contains adult material.
+Bid on Program trademarks or brand terms in paid search campaigns without explicit permission.
+Falsify transactions or artificially inflate commissions.
+
+3. Commissions & Payments
+Commissions are only earned on valid, fully paid, and non-refunded transactions.
+The Program Admin reserves the right to adjust, reject, or delay payments in case of suspected fraud or violations of these terms.
+Payouts are made on a [e.g., monthly] basis via [payment method], subject to a minimum payout threshold of [$X].
+
+4. Termination
+Either party may terminate participation at any time, with or without cause.
+If terminated due to a violation of these terms, any pending commissions may be forfeited.
+
+5. Program Modifications
+The Program Admin reserves the right to update or modify these terms at any time. Continued participation constitutes acceptance of any changes.
+
+6. Final Discretion
+The Program Admin has the final authority regarding affiliate eligibility, commission payments, and program enforcement.
+By participating in the Program, you acknowledge and agree to these terms.</textarea>
+                            </div>
+                            <p class="mt-3 text-sm leading-6 text-gray-600">Terms that partners must accept before joining the program.</p>
+                        </div>
+
                         <div class="sm:col-span-4">
                             <label for="landing_page" class="block text-sm font-medium leading-6 text-gray-900">Landing Page URL</label>
                             <div class="mt-2">
