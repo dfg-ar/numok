@@ -28,9 +28,9 @@
                 <select id="partner_id" name="partner_id" class="block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                     <option value="">All Partners</option>
                     <?php foreach ($partners as $partner): ?>
-                    <option value="<?= $partner['id'] ?>" <?= ($filters['partner_id'] ?? '') == $partner['id'] ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($partner['company_name'] ?? '') ?>
-                    </option>
+                        <option value="<?= $partner['id'] ?>" <?= ($filters['partner_id'] ?? '') == $partner['id'] ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($partner['company_name'] ?? '') ?>
+                        </option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -39,23 +39,23 @@
                 <select id="program_id" name="program_id" class="block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                     <option value="">All Programs</option>
                     <?php foreach ($programs as $program): ?>
-                    <option value="<?= $program['id'] ?>" <?= ($filters['program_id'] ?? '') == $program['id'] ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($program['name'] ?? '') ?>
-                    </option>
+                        <option value="<?= $program['id'] ?>" <?= ($filters['program_id'] ?? '') == $program['id'] ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($program['name'] ?? '') ?>
+                        </option>
                     <?php endforeach; ?>
                 </select>
             </div>
 
             <div class="flex items-center gap-2">
-                <input type="date" name="start_date" id="start_date" 
-                       value="<?= htmlspecialchars($filters['start_date'] ?? '') ?>"
-                       placeholder="Start Date"
-                       class="block w-40 rounded-md border-0 py-1.5 pl-3 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                <input type="date" name="start_date" id="start_date"
+                    value="<?= htmlspecialchars($filters['start_date'] ?? '') ?>"
+                    placeholder="Start Date"
+                    class="block w-40 rounded-md border-0 py-1.5 pl-3 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                 <span class="text-gray-500">-</span>
-                <input type="date" name="end_date" id="end_date" 
-                       value="<?= htmlspecialchars($filters['end_date'] ?? '') ?>"
-                       placeholder="End Date"
-                       class="block w-40 rounded-md border-0 py-1.5 pl-3 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                <input type="date" name="end_date" id="end_date"
+                    value="<?= htmlspecialchars($filters['end_date'] ?? '') ?>"
+                    placeholder="End Date"
+                    class="block w-40 rounded-md border-0 py-1.5 pl-3 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
             </div>
 
             <button type="submit" class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-500">
@@ -81,134 +81,138 @@
 
         <!-- Conversions Table -->
         <?php if (empty($conversions)): ?>
-        <div class="mt-8 text-center">
-            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-            </svg>
-            <h3 class="mt-2 text-sm font-medium text-gray-900">No conversions found</h3>
-            <p class="mt-1 text-sm text-gray-500">No conversions match your current filters.</p>
-        </div>
+            <div class="mt-8 text-center">
+                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                </svg>
+                <h3 class="mt-2 text-sm font-medium text-gray-900">No conversions found</h3>
+                <p class="mt-1 text-sm text-gray-500">No conversions match your current filters.</p>
+            </div>
         <?php else: ?>
-        <div class="mt-8 flow-root">
-            <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                <div class="inline-block min-w-full py-2 align-middle">
-                    <table class="min-w-full divide-y divide-gray-300">
-                        <thead>
-                            <tr>
-                                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Date</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Partner</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Program</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Customer</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Amount</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Commission</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Status</th>
-                                <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
-                                    <span class="sr-only">Actions</span>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200 bg-white">
-                            <?php foreach ($conversions as $conversion): ?>
-                            <tr>
-                                <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm text-gray-900 sm:pl-6">
-                                    <?= date('M j, Y', strtotime($conversion['created_at'] ?? '')) ?>
-                                    <div class="text-gray-500"><?= date('g:i A', strtotime($conversion['created_at'] ?? '')) ?></div>
-                                </td>
-                                <td class="whitespace-nowrap px-3 py-4 text-sm">
-                                    <div class="font-medium text-gray-900"><?= htmlspecialchars($conversion['partner_name'] ?? '') ?></div>
-                                    <div class="text-gray-500 font-mono text-xs"><?= htmlspecialchars($conversion['tracking_code'] ?? '') ?></div>
-                                </td>
-                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                    <?= htmlspecialchars($conversion['program_name'] ?? '') ?>
-                                </td>
-                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                    <?= htmlspecialchars($conversion['customer_email'] ?? '') ?>
-                                </td>
-                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                    $<?= number_format($conversion['amount'] ?? 0, 2) ?>
-                                </td>
-                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                    $<?= number_format($conversion['commission_amount'] ?? 0, 2) ?>
-                                </td>
-                                <td class="whitespace-nowrap px-3 py-4 text-sm">
-                                    <span class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium <?php
-                                        switch($conversion['status']):
-                                            case 'pending':
-                                                echo 'bg-yellow-50 text-yellow-800';
-                                                break;
-                                            case 'payable':
-                                                echo 'bg-green-50 text-green-800';
-                                                break;
-                                            case 'paid':
-                                                echo 'bg-blue-50 text-blue-800';
-                                                break;
-                                            case 'rejected':
-                                                echo 'bg-red-50 text-red-800';
-                                                break;
-                                            default:
-                                                echo 'bg-gray-100 text-gray-800';
-                                        endswitch; ?>">
-                                        <?= ucfirst(htmlspecialchars($conversion['status'])) ?>
-                                    </span>
-                                </td>
-                                <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                                    <div x-data="{ open: false }" class="relative inline-block text-left">
-                                        <button @click="open = !open" type="button" class="p-1 rounded-full hover:bg-gray-50">
-                                            <svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                                                <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                                            </svg>
-                                        </button>
-                                        
-                                        <div x-show="open" 
-                                             @click.away="open = false"
-                                             class="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" 
-                                             role="menu" 
-                                             aria-orientation="vertical" 
-                                             aria-labelledby="menu-button" 
-                                             tabindex="-1"
-                                             style="display: none;">
-                                            <div class="py-1" role="none">
+            <div class="mt-8 flow-root">
+                <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                    <div class="inline-block min-w-full py-2 align-middle">
+                        <table class="min-w-full divide-y divide-gray-300">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Date</th>
+                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Partner</th>
+                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Program</th>
+                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Customer</th>
+                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Amount</th>
+                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Commission</th>
+                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Status</th>
+                                    <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                                        <span class="sr-only">Actions</span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 bg-white">
+                                <?php foreach ($conversions as $conversion): ?>
+                                    <tr>
+                                        <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm text-gray-900 sm:pl-6">
+                                            <?= date('M j, Y', strtotime($conversion['created_at'] ?? '')) ?>
+                                            <div class="text-gray-500"><?= date('g:i A', strtotime($conversion['created_at'] ?? '')) ?></div>
+                                        </td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm">
+                                            <div class="font-medium text-gray-900"><?= htmlspecialchars($conversion['partner_name'] ?? '') ?></div>
+                                            <div class="text-gray-500 font-mono text-xs"><?= htmlspecialchars($conversion['tracking_code'] ?? '') ?></div>
+                                        </td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                            <?= htmlspecialchars($conversion['program_name'] ?? '') ?>
+                                        </td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                            <?= htmlspecialchars($conversion['customer_email'] ?? '') ?>
+                                        </td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                            $<?= number_format($conversion['amount'] ?? 0, 2) ?>
+                                        </td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                            $<?= number_format($conversion['commission_amount'] ?? 0, 2) ?>
+                                        </td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm">
+                                            <span class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium <?php
+                                                                                                                            switch ($conversion['status']):
+                                                                                                                                case 'pending':
+                                                                                                                                    echo 'bg-yellow-50 text-yellow-800';
+                                                                                                                                    break;
+                                                                                                                                case 'payable':
+                                                                                                                                    echo 'bg-green-50 text-green-800';
+                                                                                                                                    break;
+                                                                                                                                case 'paid':
+                                                                                                                                    echo 'bg-blue-50 text-blue-800';
+                                                                                                                                    break;
+                                                                                                                                case 'rejected':
+                                                                                                                                    echo 'bg-red-50 text-red-800';
+                                                                                                                                    break;
+                                                                                                                                default:
+                                                                                                                                    echo 'bg-gray-100 text-gray-800';
+                                                                                                                            endswitch; ?>">
+                                                <?= ucfirst(htmlspecialchars($conversion['status'])) ?>
+                                            </span>
+                                        </td>
+                                        <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-sm font-medium sm:pr-6">
+                                            <div class="flex items-center justify-end space-x-2">
                                                 <?php if ($conversion['status'] === 'pending'): ?>
-                                                <form method="POST" action="/admin/conversions/update-status" class="block w-full">
-                                                    <input type="hidden" name="id" value="<?= $conversion['id'] ?>">
-                                                    <input type="hidden" name="status" value="payable">
-                                                    <button type="submit" class="text-green-700 hover:bg-gray-100 hover:text-green-900 block w-full px-4 py-2 text-left text-sm" role="menuitem">
-                                                        Mark as Payable
-                                                    </button>
-                                                </form>
-                                                <form method="POST" action="/admin/conversions/update-status" class="block w-full">
-                                                    <input type="hidden" name="id" value="<?= $conversion['id'] ?>">
-                                                    <input type="hidden" name="status" value="rejected">
-                                                    <button type="submit" class="text-red-700 hover:bg-gray-100 hover:text-red-900 block w-full px-4 py-2 text-left text-sm" role="menuitem">
-                                                        Reject Conversion
-                                                    </button>
-                                                </form>
+                                                    <!-- Mark as Payable -->
+                                                    <form method="POST" action="/admin/conversions/update-status" class="inline-block">
+                                                        <input type="hidden" name="id" value="<?= $conversion['id'] ?>">
+                                                        <input type="hidden" name="status" value="payable">
+                                                        <button type="submit"
+                                                            class="inline-flex items-center rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-green-600 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-green-50">
+                                                            <svg class="mr-1.5 h-4 w-4 text-green-500" viewBox="0 0 20 20" fill="currentColor">
+                                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                                            </svg>
+                                                            Mark Payable
+                                                        </button>
+                                                    </form>
+
+                                                    <!-- Reject -->
+                                                    <form method="POST" action="/admin/conversions/update-status" class="inline-block">
+                                                        <input type="hidden" name="id" value="<?= $conversion['id'] ?>">
+                                                        <input type="hidden" name="status" value="rejected">
+                                                        <button type="submit"
+                                                            class="inline-flex items-center rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-red-600 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-red-50">
+                                                            <svg class="mr-1.5 h-4 w-4 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
+                                                            </svg>
+                                                            Reject
+                                                        </button>
+                                                    </form>
                                                 <?php endif; ?>
 
                                                 <?php if ($conversion['status'] === 'payable'): ?>
-                                                <form method="POST" action="/admin/conversions/update-status" class="block w-full">
-                                                    <input type="hidden" name="id" value="<?= $conversion['id'] ?>">
-                                                    <input type="hidden" name="status" value="paid">
-                                                    <button type="submit" class="text-blue-700 hover:bg-gray-100 hover:text-blue-900 block w-full px-4 py-2 text-left text-sm" role="menuitem">
-                                                        Mark as Paid
-                                                    </button>
-                                                </form>
+                                                    <!-- Mark as Paid -->
+                                                    <form method="POST" action="/admin/conversions/update-status" class="inline-block">
+                                                        <input type="hidden" name="id" value="<?= $conversion['id'] ?>">
+                                                        <input type="hidden" name="status" value="paid">
+                                                        <button type="submit"
+                                                            class="inline-flex items-center rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-blue-600 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-blue-50">
+                                                            <svg class="mr-1.5 h-4 w-4 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
+                                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V7z" clip-rule="evenodd" />
+                                                            </svg>
+                                                            Mark Paid
+                                                        </button>
+                                                    </form>
                                                 <?php endif; ?>
 
-                                                <!-- <a href="#" onclick="alert('Details view coming soon')" class="text-gray-700 hover:bg-gray-100 hover:text-gray-900 block px-4 py-2 text-sm" role="menuitem">
+                                                <!-- View Details button (if needed in the future) -->
+                                                <!-- <a href="#" class="inline-flex items-center rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                                                    <svg class="mr-1.5 h-4 w-4 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                                                        <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+                                                    </svg>
                                                     View Details
                                                 </a> -->
                                             </div>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-        </div>
         <?php endif; ?>
     </div>
 </div>
