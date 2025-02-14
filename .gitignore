@@ -2,3 +2,5 @@
 config/
 public/tracking/*
 repomix*
+vendor/*
+composer.lock
