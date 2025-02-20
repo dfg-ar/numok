@@ -75,7 +75,7 @@ CREATE DATABASE numok CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 ```
 # Import the database structure
-mysql -u your_db_user -p numok < database/numok-0-1.sql
+mysql -u your_db_user -p numok < database/deploy.sql
 ```
 
 ### 6\. Web Server Configuration
