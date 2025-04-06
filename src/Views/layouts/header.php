@@ -15,7 +15,7 @@
 <body class="h-full">
     <?php if (isset($_SESSION['user_id'])): ?>
     <div class="min-h-full">
-        <nav class="bg-white shadow">
+        <nav class="bg-white shadow" x-data="{ mobileMenuOpen: false }">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div class="flex h-16 justify-between">
                     <div class="flex">
@@ -77,7 +77,7 @@
             </div>
 
             <!-- Mobile menu -->
-            <div class="sm:hidden" x-data="{ mobileMenuOpen: false }" x-show="mobileMenuOpen" style="display: none;">
+            <div class="sm:hidden" x-show="mobileMenuOpen" style="display: none;">
                 <div class="space-y-1 pb-3 pt-2">
                     <a href="/admin/dashboard" class="<?= $path === 'dashboard' ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700' ?> block border-l-4 py-2 pl-3 pr-4 text-base font-medium">Dashboard</a>
                     <a href="/admin/programs" class="<?= $path === 'programs' ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700' ?> block border-l-4 py-2 pl-3 pr-4 text-base font-medium">Programs</a>
