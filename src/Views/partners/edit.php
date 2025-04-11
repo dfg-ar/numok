@@ -114,7 +114,7 @@
                         <h3 class="text-base font-semibold leading-6 text-gray-900">Program Assignments</h3>
                         
                         <?php if ($partner['status'] === 'active'): ?>
-                        <form action="/partners/<?= $partner['id'] ?>/assign-program" method="POST" class="mt-4">
+                        <form action="/admin/partners/<?= $partner['id'] ?>/assign-program" method="POST" class="mt-4">
                             <div class="flex gap-3">
                                 <div class="flex-1">
                                     <select name="program_id" required
