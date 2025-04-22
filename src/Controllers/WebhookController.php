@@ -13,7 +13,7 @@ class WebhookController extends Controller {
             'payload' => $payload,
             'signature' => $_SERVER['HTTP_STRIPE_SIGNATURE'] ?? null
         ]);
-        
+
         // Get webhook secret from settings
         $webhookSecret = Database::query(
             "SELECT value FROM settings WHERE name = 'stripe_webhook_secret' LIMIT 1"
@@ -22,13 +22,13 @@ class WebhookController extends Controller {
         // Get payload and signature
         $payload = @file_get_contents('php://input');
         $sigHeader = $_SERVER['HTTP_STRIPE_SIGNATURE'] ?? '';
-
+        
         try {
             // Verify signature
             $event = \Stripe\Webhook::constructEvent(
                 $payload, $sigHeader, $webhookSecret
             );
-
+            
             // Process different event types
             switch ($event->type) {
                 case 'checkout.session.completed':
@@ -75,7 +75,7 @@ class WebhookController extends Controller {
 
         // Get partner program
         $partnerProgram = Database::query(
-            "SELECT pp.*, p.reward_days, p.is_recurring 
+            "SELECT pp.*, p.reward_days, p.is_recurring, p.commission_type, p.commission_value 
              FROM partner_programs pp
              JOIN programs p ON pp.program_id = p.id
              WHERE pp.tracking_code = ? 
@@ -95,9 +95,23 @@ class WebhookController extends Controller {
 
         // Store conversion
         try {
+            // Check session mode - for subscription mode, use subscription ID instead of payment_intent
+            $paymentId = $session->payment_intent;
+            if ($session->mode === 'subscription' && !empty($session->subscription)) {
+                $paymentId = $session->subscription;
+            }
+            
+            if (!$paymentId) {
+                $this->logEvent('checkout_completed_missing_payment_id', [
+                    'session_id' => $session->id,
+                    'mode' => $session->mode
+                ]);
+                $paymentId = $session->id; // Fallback to session ID if nothing else is available
+            }
+
             Database::insert('conversions', [
                 'partner_program_id' => $partnerProgram['id'],
-                'stripe_payment_id' => $session->payment_intent,
+                'stripe_payment_id' => $paymentId,
                 'amount' => $session->amount_total / 100, // Convert from cents
                 'commission_amount' => $this->calculateCommission($session->amount_total / 100, $partnerProgram),
                 'status' => $status,
@@ -110,14 +124,15 @@ class WebhookController extends Controller {
             ]);
 
             $this->logEvent('conversion_created', [
-                'payment_id' => $session->payment_intent,
+                'payment_id' => $paymentId,
                 'tracking_code' => $trackingCode,
                 'amount' => $session->amount_total / 100
             ]);
         } catch (\Exception $e) {
             $this->logEvent('conversion_creation_failed', [
                 'error' => $e->getMessage(),
-                'payment_id' => $session->payment_intent
+                'payment_id' => $paymentId ?? null,
+                'session_id' => $session->id
             ]);
             throw $e;
         }
@@ -303,10 +318,19 @@ class WebhookController extends Controller {
     }
 
     private function calculateCommission(float $amount, array $partnerProgram): float {
+        if (!isset($partnerProgram['commission_type']) || !isset($partnerProgram['commission_value'])) {
+            // Log the missing data for debugging
+            $this->logEvent('commission_calculation_error', [
+                'error' => 'Missing commission data in partner program',
+                'partner_program' => $partnerProgram
+            ]);
+            return 0.0; // Default to zero commission if data is missing
+        }
+        
         if ($partnerProgram['commission_type'] === 'percentage') {
             return round($amount * ($partnerProgram['commission_value'] / 100), 2);
         }
-        return $partnerProgram['commission_value'];
+        return (float)$partnerProgram['commission_value'];
     }
 
     private function logEvent(string $type, $data): void {
