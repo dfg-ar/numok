@@ -34,6 +34,7 @@
                         <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
                             <a href="/dashboard" class="<?= $path === 'partner/dashboard' ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' ?> inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium">Dashboard</a>
                             <a href="/programs" class="<?= $path === 'partner/programs' ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' ?> inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium">Programs</a>
+                            <a href="/earnings" class="<?= $path === 'partner/earnings' ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' ?> inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium">Earnings</a>
                         </div>
                     </div>
                     
@@ -85,6 +86,7 @@
             <div class="sm:hidden" x-show="mobileMenuOpen" style="display: none;">
                 <div class="space-y-1 pb-3 pt-2">
                     <a href="/dashboard" class="<?= $path === 'partner/dashboard' ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700' ?> block border-l-4 py-2 pl-3 pr-4 text-base font-medium">Dashboard</a>
+                    <a href="/earnings" class="<?= $path === 'partner/earnings' ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700' ?> block border-l-4 py-2 pl-3 pr-4 text-base font-medium">Earnings</a>
                     <a href="/programs" class="<?= $path === 'partner/programs' ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700' ?> block border-l-4 py-2 pl-3 pr-4 text-base font-medium">Programs</a>
                 </div>
                 <div class="border-t border-gray-200 pb-3 pt-4">
