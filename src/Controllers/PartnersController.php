@@ -24,15 +24,17 @@ class PartnersController extends Controller {
              ORDER BY p.created_at DESC"
         )->fetchAll();
 
+        $settings = $this->getSettings();
         $this->view('partners/index', [
-            'title' => 'Partners - Numok',
+            'title' => 'Partners - ' . ($settings['custom_app_name'] ?? 'Numok'),
             'partners' => $partners
         ]);
     }
 
     public function create(): void {
+        $settings = $this->getSettings();
         $this->view('partners/create', [
-            'title' => 'Create Partner - Numok'
+            'title' => 'Create Partner - ' . ($settings['custom_app_name'] ?? 'Numok')
         ]);
     }
 
@@ -118,8 +120,9 @@ class PartnersController extends Controller {
             [$id]
         )->fetchAll();
 
+        $settings = $this->getSettings();
         $this->view('partners/edit', [
-            'title' => 'Edit Partner - Numok',
+            'title' => 'Edit Partner - ' . ($settings['custom_app_name'] ?? 'Numok'),
             'partner' => $partner,
             'programs' => $programs,
             'availablePrograms' => $availablePrograms

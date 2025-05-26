@@ -82,8 +82,9 @@ class ConversionsController extends Controller {
             'commission' => array_sum(array_column($conversions, 'commission_amount'))
         ];
 
+        $settings = $this->getSettings();
         $this->view('conversions/index', [
-            'title' => 'Conversions - Numok',
+            'title' => 'Conversions - ' . ($settings['custom_app_name'] ?? 'Numok'),
             'conversions' => $conversions,
             'partners' => $partners,
             'programs' => $programs,

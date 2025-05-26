@@ -1,6 +1,8 @@
 .DS_Store
 config.php
 public/tracking/*
+public/assets/uploads/*
+!public/assets/uploads/.htaccess
 repomix*
 vendor/*
 composer.lock

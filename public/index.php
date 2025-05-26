@@ -47,6 +47,8 @@ $routes = [
     'admin/dashboard' => ['DashboardController', 'index'],
     'admin/settings' => ['SettingsController', 'index'],
     'admin/settings/update' => ['SettingsController', 'update'],
+    'admin/settings/update-branding' => ['SettingsController', 'updateBranding'],
+    'admin/settings/reset-branding' => ['SettingsController', 'resetBranding'],
     'admin/settings/update-profile' => ['SettingsController', 'updateProfile'],
     'admin/settings/test-connection' => ['SettingsController', 'testConnection'],
     

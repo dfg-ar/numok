@@ -12,10 +12,10 @@ class SettingsController extends Controller {
     }
 
     public function index(): void {
-        $settings = $this->getSettings();
+        $settings = $this->getAllSettings();
         
         $this->view('settings/index', [
-            'title' => 'Settings - Numok',
+            'title' => 'Settings - ' . ($settings['custom_app_name'] ?? 'Numok'),
             'settings' => $settings,
             'success' => $_SESSION['settings_success'] ?? null,
             'error' => $_SESSION['settings_error'] ?? null
@@ -62,7 +62,7 @@ class SettingsController extends Controller {
     public function testConnection(): void {
         header('Content-Type: application/json');
 
-        $settings = $this->getSettings();
+        $settings = $this->getAllSettings();
         $response = ['success' => false, 'messages' => []];
 
         // Test Stripe API Key
@@ -131,7 +131,7 @@ class SettingsController extends Controller {
         exit;
     }
 
-    private function getSettings(): array {
+    private function getAllSettings(): array {
         $stmt = Database::query("SELECT name, value FROM settings");
         $settings = [];
         
@@ -227,6 +227,116 @@ class SettingsController extends Controller {
             $_SESSION['settings_error'] = 'Failed to update profile. Please try again.';
         }
     
+        header('Location: /admin/settings');
+        exit;
+    }
+
+    public function updateBranding(): void {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: /admin/settings');
+            exit;
+        }
+
+        try {
+            Database::transaction(function() {
+                $settings = [];
+                
+                // Handle custom app name
+                if (isset($_POST['custom_app_name'])) {
+                    $settings['custom_app_name'] = trim($_POST['custom_app_name']);
+                }
+
+                // Handle logo upload
+                if (isset($_FILES['custom_logo']) && $_FILES['custom_logo']['error'] === UPLOAD_ERR_OK) {
+                    $uploadedFile = $_FILES['custom_logo'];
+                    
+                    // Validate file type
+                    $allowedTypes = ['image/jpeg', 'image/png', 'image/svg+xml', 'image/webp'];
+                    if (!in_array($uploadedFile['type'], $allowedTypes)) {
+                        throw new \Exception('Invalid file type. Please upload a PNG, JPG, SVG, or WebP image.');
+                    }
+                    
+                    // Validate file size (max 5MB)
+                    if ($uploadedFile['size'] > 5 * 1024 * 1024) {
+                        throw new \Exception('File size too large. Please upload an image smaller than 5MB.');
+                    }
+                    
+                    // Generate unique filename
+                    $extension = pathinfo($uploadedFile['name'], PATHINFO_EXTENSION);
+                    $filename = 'logo_' . time() . '_' . uniqid() . '.' . $extension;
+                    $uploadDir = ROOT_PATH . '/public/assets/uploads';
+                    $uploadPath = $uploadDir . '/' . $filename;
+                    
+                    // Create uploads directory if it doesn't exist
+                    if (!is_dir($uploadDir)) {
+                        mkdir($uploadDir, 0755, true);
+                    }
+                    
+                    // Move uploaded file
+                    if (!move_uploaded_file($uploadedFile['tmp_name'], $uploadPath)) {
+                        throw new \Exception('Failed to upload logo. Please try again.');
+                    }
+                    
+                    // Delete old logo if exists
+                    $currentSettings = $this->getAllSettings();
+                    if (!empty($currentSettings['custom_logo'])) {
+                        $oldLogoPath = ROOT_PATH . '/public/assets/uploads/' . $currentSettings['custom_logo'];
+                        if (file_exists($oldLogoPath)) {
+                            unlink($oldLogoPath);
+                        }
+                    }
+                    
+                    $settings['custom_logo'] = $filename;
+                }
+
+                // Save settings to database
+                foreach ($settings as $key => $value) {
+                    Database::query(
+                        "INSERT INTO settings (name, value) 
+                         VALUES (?, ?) 
+                         ON DUPLICATE KEY UPDATE value = VALUES(value)",
+                        [$key, $value]
+                    );
+                }
+            });
+
+            $_SESSION['settings_success'] = 'Branding updated successfully.';
+        } catch (\Exception $e) {
+            $_SESSION['settings_error'] = $e->getMessage();
+        }
+
+        header('Location: /admin/settings');
+        exit;
+    }
+
+    public function resetBranding(): void {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: /admin/settings');
+            exit;
+        }
+
+        try {
+            Database::transaction(function() {
+                // Get current settings to delete old logo file
+                $currentSettings = $this->getAllSettings();
+                
+                // Delete old logo file if exists
+                if (!empty($currentSettings['custom_logo'])) {
+                    $oldLogoPath = ROOT_PATH . '/public/assets/uploads/' . $currentSettings['custom_logo'];
+                    if (file_exists($oldLogoPath)) {
+                        unlink($oldLogoPath);
+                    }
+                }
+                
+                // Remove custom branding settings from database
+                Database::query("DELETE FROM settings WHERE name IN ('custom_app_name', 'custom_logo')");
+            });
+
+            $_SESSION['settings_success'] = 'Branding reset to Numok successfully.';
+        } catch (\Exception $e) {
+            $_SESSION['settings_error'] = 'Failed to reset branding. Please try again.';
+        }
+
         header('Location: /admin/settings');
         exit;
     }

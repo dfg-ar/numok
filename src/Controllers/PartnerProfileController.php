@@ -18,8 +18,9 @@ class PartnerProfileController extends PartnerBaseController {
             [$_SESSION['partner_id']]
         )->fetch();
 
+        $settings = $this->getSettings();
         $this->view('partner/settings/index', [
-            'title' => 'Account Settings - Numok',
+            'title' => 'Account Settings - ' . ($settings['custom_app_name'] ?? 'Numok'),
             'partner' => $partner
         ]);
     }

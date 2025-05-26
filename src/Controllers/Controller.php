@@ -2,6 +2,8 @@
 
 namespace Numok\Controllers;
 
+use Numok\Database\Database;
+
 class Controller {
     
     protected function handlePreflightRequest(): void {
@@ -16,11 +18,32 @@ class Controller {
     }
 
     protected function view(string $template, array $data = []): void {
+        // Always include settings in view data
+        if (!isset($data['settings'])) {
+            $data['settings'] = $this->getSettings();
+        }
+        
         extract($data);
         
         require ROOT_PATH . "/src/Views/layouts/header.php";
         require ROOT_PATH . "/src/Views/{$template}.php";
         require ROOT_PATH . "/src/Views/layouts/footer.php";
+    }
+
+    protected function getSettings(): array {
+        try {
+            $stmt = Database::query("SELECT name, value FROM settings");
+            $settings = [];
+            
+            while ($row = $stmt->fetch()) {
+                $settings[$row['name']] = $row['value'];
+            }
+
+            return $settings;
+        } catch (\Exception $e) {
+            // Return empty array if database is not available
+            return [];
+        }
     }
 
     protected function json(array $data): void {

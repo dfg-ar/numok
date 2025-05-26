@@ -29,8 +29,9 @@ class PartnerProgramsController extends PartnerBaseController {
             [$partnerId]
         )->fetchAll();
 
+        $settings = $this->getSettings();
         $this->view('partner/programs/index', [
-            'title' => 'Available Programs - Numok',
+            'title' => 'Available Programs - ' . ($settings['custom_app_name'] ?? 'Numok'),
             'programs' => $programs
         ]);
     }

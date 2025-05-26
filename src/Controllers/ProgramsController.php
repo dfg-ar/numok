@@ -24,15 +24,17 @@ class ProgramsController extends Controller {
              ORDER BY p.created_at DESC"
         )->fetchAll();
 
+        $settings = $this->getSettings();
         $this->view('programs/index', [
-            'title' => 'Programs - Numok',
+            'title' => 'Programs - ' . ($settings['custom_app_name'] ?? 'Numok'),
             'programs' => $programs
         ]);
     }
 
     public function create(): void {
+        $settings = $this->getSettings();
         $this->view('programs/create', [
-            'title' => 'Create Program - Numok'
+            'title' => 'Create Program - ' . ($settings['custom_app_name'] ?? 'Numok')
         ]);
     }
 
@@ -92,8 +94,9 @@ class ProgramsController extends Controller {
             exit;
         }
 
+        $settings = $this->getSettings();
         $this->view('programs/edit', [
-            'title' => 'Edit Program - Numok',
+            'title' => 'Edit Program - ' . ($settings['custom_app_name'] ?? 'Numok'),
             'program' => $program
         ]);
     }
@@ -111,12 +114,13 @@ class ProgramsController extends Controller {
         }
 
         // Get settings for the app URL
-        $settings = Database::query("SELECT * FROM settings WHERE name = 'app_url' LIMIT 1")->fetch();
+        $appUrlSetting = Database::query("SELECT * FROM settings WHERE name = 'app_url' LIMIT 1")->fetch();
+        $settings = $this->getSettings();
 
         $this->view('programs/integration', [
-            'title' => 'Integration Guide - Numok',
+            'title' => 'Integration Guide - ' . ($settings['custom_app_name'] ?? 'Numok'),
             'program' => $program,
-            'settings' => $settings
+            'settings' => $appUrlSetting
         ]);
     }
 

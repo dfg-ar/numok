@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($title ?? 'Partner Portal - Numok') ?></title>
+    <title><?= htmlspecialchars($title ?? 'Partner Portal - ' . ($settings['custom_app_name'] ?? 'Numok')) ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/alpinejs" defer></script>
 
@@ -24,7 +24,11 @@
                     <div class="flex">
                         <div class="flex flex-shrink-0 items-center">
                             <a href="/dashboard">
-                                <img src="/assets/images/numok-logo.png" alt="Numok" class="h-8" />
+                                <?php if (!empty($settings['custom_logo'])): ?>
+                                    <img src="/assets/uploads/<?= htmlspecialchars($settings['custom_logo']) ?>" alt="<?= htmlspecialchars($settings['custom_app_name'] ?? 'App') ?>" class="h-8 max-w-48 object-contain" />
+                                <?php else: ?>
+                                    <img src="/assets/images/numok-logo.png" alt="Numok" class="h-8" />
+                                <?php endif; ?>
                             </a>
                         </div>
                         <div class="hidden sm:ml-6 sm:flex sm:space-x-8">

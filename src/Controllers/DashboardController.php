@@ -17,8 +17,9 @@ class DashboardController extends Controller {
         // Get recent conversions
         $conversions = $this->getRecentConversions();
 
+        $settings = $this->getSettings();
         $this->view('dashboard/index', [
-            'title' => 'Dashboard - Numok',
+            'title' => 'Dashboard - ' . ($settings['custom_app_name'] ?? 'Numok'),
             'user_name' => $_SESSION['user_name'],
             'stats' => $stats,
             'recent_conversions' => $conversions

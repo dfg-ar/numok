@@ -86,30 +86,55 @@
                     </div>
                 </div>
 
-                <!-- General Settings -->
+                <!-- Custom Branding -->
                 <div class="bg-white shadow sm:rounded-lg">
                     <div class="px-4 py-5 sm:p-6">
-                        <h3 class="text-base font-semibold leading-6 text-gray-900">General Settings</h3>
+                        <h3 class="text-base font-semibold leading-6 text-gray-900">Custom Branding</h3>
                         <div class="mt-4 max-w-xl">
-                            <form action="/admin/settings/update" method="POST">
+                            <form action="/admin/settings/update-branding" method="POST" enctype="multipart/form-data">
+                                <!-- Custom App Name -->
                                 <div class="mb-4">
-                                    <label for="app_name" class="block text-sm font-medium text-gray-700">Application Name</label>
-                                    <input type="text" name="app_name" id="app_name" 
-                                           value="<?= htmlspecialchars($settings['app_name'] ?? 'Numok') ?>"
+                                    <label for="custom_app_name" class="block text-sm font-medium text-gray-700">Custom App Name</label>
+                                    <input type="text" name="custom_app_name" id="custom_app_name" 
+                                           value="<?= htmlspecialchars($settings['custom_app_name'] ?? '') ?>"
+                                           placeholder="Enter your app name"
                                            class="mt-1 block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-3">
-                                    <p class="mt-2 text-sm text-gray-500">This name will be displayed throughout the application.</p>
+                                    <p class="mt-2 text-sm text-gray-500">This will replace "Numok" throughout the application.</p>
                                 </div>
 
-                                <div class="mt-6">
+                                <!-- Custom Logo Upload -->
+                                <div class="mb-4">
+                                    <label for="custom_logo" class="block text-sm font-medium text-gray-700">Custom Logo</label>
+                                    <?php if (!empty($settings['custom_logo'])): ?>
+                                    <div class="mt-2 mb-3">
+                                        <img src="/assets/uploads/<?= htmlspecialchars($settings['custom_logo']) ?>" alt="Current Logo" class="h-12 max-w-48 object-contain">
+                                        <p class="text-sm text-gray-500 mt-1">Current logo</p>
+                                    </div>
+                                    <?php endif; ?>
+                                    <input type="file" name="custom_logo" id="custom_logo" accept="image/*"
+                                           class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                                    <p class="mt-2 text-sm text-gray-500">Upload a PNG, JPG, or SVG file. Recommended size: 200x50px or similar aspect ratio.</p>
+                                </div>
+
+                                <div class="mt-6 flex space-x-3">
                                     <button type="submit" 
                                             class="inline-flex justify-center rounded-md bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                                        Save Settings
+                                        Update Branding
                                     </button>
+                                    <?php if (!empty($settings['custom_app_name']) || !empty($settings['custom_logo'])): ?>
+                                    <button type="button" 
+                                            onclick="resetBranding()"
+                                            class="inline-flex justify-center rounded-md bg-gray-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
+                                        Reset to Numok Branding
+                                    </button>
+                                    <?php endif; ?>
                                 </div>
                             </form>
                         </div>
                     </div>
                 </div>
+
+
 
                 <!-- Stripe Integration -->
                 <div class="bg-white shadow sm:rounded-lg" x-data="{ 
@@ -244,6 +269,7 @@
                                 <p>Configure your main settings here including:</p>
                                 <ul class="list-disc pl-5 space-y-2">
                                     <li>Admin profile and security</li>
+                                    <li>Custom branding and logo</li>
                                     <li>Application general settings</li>
                                     <li>Stripe payment integration</li>
                                     <li>Partner portal configuration</li>
@@ -274,3 +300,16 @@
         </div>
     </div>
 </div>
+
+<script>
+function resetBranding() {
+    if (confirm('Are you sure you want to reset to Numok branding? This will remove your custom app name and logo.')) {
+        // Create a form to submit the reset request
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/admin/settings/reset-branding';
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+</script>

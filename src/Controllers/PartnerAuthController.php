@@ -15,8 +15,9 @@ class PartnerAuthController extends PartnerBaseController {
         $error = $_SESSION['login_error'] ?? '';
         unset($_SESSION['login_error']);
         
+        $settings = $this->getSettings();
         $this->view('partner/auth/login', [
-            'title' => 'Partner Login - Numok',
+            'title' => 'Partner Login - ' . ($settings['custom_app_name'] ?? 'Numok'),
             'error' => $error
         ]);
     }
@@ -78,8 +79,9 @@ class PartnerAuthController extends PartnerBaseController {
     }
 
     public function register(): void {
+        $settings = $this->getSettings();
         $this->view('partner/auth/register', [
-            'title' => 'Register - Numok'
+            'title' => 'Register - ' . ($settings['custom_app_name'] ?? 'Numok')
         ]);
     }
 

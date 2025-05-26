@@ -22,8 +22,9 @@ class PartnerDashboardController extends PartnerBaseController {
         // Get active programs
         $programs = $this->getActivePrograms($partnerId);
 
+        $settings = $this->getSettings();
         $this->view('partner/dashboard/index', [
-            'title' => 'Partner Dashboard - Numok',
+            'title' => 'Partner Dashboard - ' . ($settings['custom_app_name'] ?? 'Numok'),
             'stats' => $stats,
             'conversions' => $conversions,
             'programs' => $programs

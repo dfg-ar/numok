@@ -15,8 +15,9 @@ class AuthController extends Controller {
         $error = $_SESSION['login_error'] ?? '';
         unset($_SESSION['login_error']);
         
+        $settings = $this->getSettings();
         $this->view('auth/login', [
-            'title' => 'Login - Numok',
+            'title' => 'Login - ' . ($settings['custom_app_name'] ?? 'Numok'),
             'error' => $error
         ]);
     }
