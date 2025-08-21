@@ -123,6 +123,17 @@ class WebhookController extends Controller {
                 ])
             ]);
 
+            // If it's a subscription, update its metadata to include the tracking code for future payments
+            if ($session->mode === 'subscription') {
+                $stripeSecretKey = Database::query("SELECT value FROM settings WHERE name = 'stripe_secret_key' LIMIT 1")->fetch()['value'];
+                \Stripe\Stripe::setApiKey($stripeSecretKey);
+                
+                \Stripe\Subscription::update($session->subscription, [
+                    'metadata' => ['numok_tracking_code' => $trackingCode]
+                ]);
+                $this->logEvent('subscription_metadata_updated', ['subscription_id' => $session->subscription, 'tracking_code' => $trackingCode]);
+            }
+
             $this->logEvent('conversion_created', [
                 'payment_id' => $paymentId,
                 'tracking_code' => $trackingCode,
@@ -230,61 +241,81 @@ class WebhookController extends Controller {
             'amount' => $invoice->amount_paid,
             'subscription_metadata' => $invoice->subscription_details->metadata ?? null
         ]);
-    
-        // Get tracking code from subscription metadata
-        $metadata = $invoice->subscription_details->metadata ?? new \stdClass();
-        $trackingCode = $metadata->numok_tracking_code ?? null;
-    
-        // If no tracking code in subscription metadata, try line items
-        if (!$trackingCode && !empty($invoice->lines->data)) {
-            $lineMetadata = $invoice->lines->data[0]->metadata ?? new \stdClass();
-            $trackingCode = $lineMetadata->numok_tracking_code ?? null;
+
+        // For trials, the first invoice.paid should update the original conversion
+        // The original conversion was stored with the subscription_id
+        $existingConversion = Database::query(
+            "SELECT * FROM conversions WHERE stripe_payment_id = ? LIMIT 1",
+            [$invoice->subscription]
+        )->fetch();
+
+        $amount = $invoice->amount_paid / 100;
+
+        if ($existingConversion && (float)$existingConversion['amount'] === 0.00) {
+            // This is the first payment after a trial. Update the existing conversion.
+            $this->updateTrialConversion($existingConversion, $invoice, $amount);
+        } else {
+            // This is a regular recurring payment, not the first payment after a trial.
+            $this->createRecurringConversion($invoice, $amount);
         }
-    
-        if (!$trackingCode) {
-            $this->logEvent('invoice_paid_no_tracking', $invoice);
+    }
+
+    private function updateTrialConversion(array $conversion, $invoice, float $amount): void {
+        $partnerProgram = $this->getPartnerProgramById($conversion['partner_program_id']);
+        if (!$partnerProgram) {
+            $this->logEvent('update_trial_conversion_no_program', ['conversion_id' => $conversion['id']]);
             return;
         }
-    
-        // Get partner program
-        $partnerProgram = Database::query(
-            "SELECT pp.*, p.reward_days, p.is_recurring, p.commission_type, p.commission_value 
-             FROM partner_programs pp
-             JOIN programs p ON pp.program_id = p.id
-             WHERE pp.tracking_code = ? 
-             AND pp.status = 'active'
-             AND p.status = 'active'
-             LIMIT 1",
-            [$trackingCode]
-        )->fetch();
-    
-        if (!$partnerProgram) {
-            $this->logEvent('invoice_paid_invalid_tracking', [
+
+        $commission = $this->calculateCommission($amount, $partnerProgram);
+        $status = $partnerProgram['reward_days'] > 0 ? 'pending' : 'payable';
+
+        try {
+            $data = [
+                'stripe_payment_id' => $invoice->payment_intent, // Update to the payment_intent for uniqueness
+                'amount' => $amount,
+                'commission_amount' => $commission,
+                'status' => $status,
+                'updated_at' => gmdate('Y-m-d H:i:s')
+            ];
+            Database::update('conversions', $data, 'id = ?', [$conversion['id']]);
+
+            $this->logEvent('trial_conversion_updated', [
+                'conversion_id' => $conversion['id'],
+                'invoice_id' => $invoice->id,
+                'new_amount' => $amount
+            ]);
+        } catch (\Exception $e) {
+            $this->logEvent('trial_conversion_update_failed', [
+                'error' => $e->getMessage(),
+                'conversion_id' => $conversion['id']
+            ]);
+            throw $e;
+        }
+    }
+
+    private function createRecurringConversion($invoice, float $amount): void {
+        $metadata = $invoice->subscription_details->metadata ?? new \stdClass();
+        $trackingCode = $metadata->numok_tracking_code ?? null;
+
+        if (!$trackingCode) {
+            $this->logEvent('invoice_paid_no_tracking_recurring', ['invoice_id' => $invoice->id]);
+            return;
+        }
+
+        $partnerProgram = $this->getPartnerProgramByTrackingCode($trackingCode);
+        if (!$partnerProgram || !$partnerProgram['is_recurring']) {
+            $this->logEvent('invoice_paid_no_recurring_program', [
                 'invoice_id' => $invoice->id,
                 'tracking_code' => $trackingCode
             ]);
             return;
         }
-    
-        if (!$partnerProgram['is_recurring']) {
-            $this->logEvent('invoice_paid_no_recurring', [
-                'invoice_id' => $invoice->id,
-                'partner_program' => $partnerProgram
-            ]);
-            return;
-        }
-    
-        // Calculate amount in dollars
-        $amount = $invoice->amount_paid / 100;
-    
-        // Calculate commission
+
         $commission = $this->calculateCommission($amount, $partnerProgram);
-    
-        // Determine status
         $status = $partnerProgram['reward_days'] > 0 ? 'pending' : 'payable';
-    
+
         try {
-            // Create conversion for the subscription payment
             Database::insert('conversions', [
                 'partner_program_id' => $partnerProgram['id'],
                 'stripe_payment_id' => $invoice->payment_intent,
@@ -299,8 +330,8 @@ class WebhookController extends Controller {
                     'subscription_id' => $invoice->subscription
                 ])
             ]);
-    
-            $this->logEvent('subscription_conversion_created', [
+
+            $this->logEvent('recurring_conversion_created', [
                 'invoice_id' => $invoice->id,
                 'tracking_code' => $trackingCode,
                 'amount' => $amount,
@@ -308,7 +339,7 @@ class WebhookController extends Controller {
                 'subscription_id' => $invoice->subscription
             ]);
         } catch (\Exception $e) {
-            $this->logEvent('subscription_conversion_failed', [
+            $this->logEvent('recurring_conversion_failed', [
                 'error' => $e->getMessage(),
                 'invoice_id' => $invoice->id,
                 'stack_trace' => $e->getTraceAsString()
@@ -316,6 +347,29 @@ class WebhookController extends Controller {
             throw $e;
         }
     }
+
+    private function getPartnerProgramById(int $id): ?array {
+        return Database::query(
+            "SELECT pp.*, p.reward_days, p.is_recurring, p.commission_type, p.commission_value
+             FROM partner_programs pp
+             JOIN programs p ON pp.program_id = p.id
+             WHERE pp.id = ? AND pp.status = 'active' AND p.status = 'active'
+             LIMIT 1",
+            [$id]
+        )->fetch() ?: null;
+    }
+
+    private function getPartnerProgramByTrackingCode(string $trackingCode): ?array {
+        return Database::query(
+            "SELECT pp.*, p.reward_days, p.is_recurring, p.commission_type, p.commission_value
+             FROM partner_programs pp
+             JOIN programs p ON pp.program_id = p.id
+             WHERE pp.tracking_code = ? AND pp.status = 'active' AND p.status = 'active'
+             LIMIT 1",
+            [$trackingCode]
+        )->fetch() ?: null;
+    }
+
 
     private function calculateCommission(float $amount, array $partnerProgram): float {
         if (!isset($partnerProgram['commission_type']) || !isset($partnerProgram['commission_value'])) {
