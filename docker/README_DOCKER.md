@@ -37,6 +37,13 @@ docker compose ps
 - **Database**: localhost:33060 (MySQL)
 - **Admin Panel**: http://localhost:8080/admin/login
 
+### 4. Default Admin Login
+On first startup, a default admin user is automatically created:
+- **Email**: `admin@numok.com`
+- **Password**: `admin123`
+
+⚠️ **SECURITY WARNING**: Change this password immediately after first login!
+
 ## 📁 Project Structure
 
 ```

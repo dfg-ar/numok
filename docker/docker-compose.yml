@@ -44,7 +44,9 @@ services:
     image: mysql:8.0
     container_name: numok_db
     restart: unless-stopped
-    command: ["--default-authentication-plugin=mysql_native_password"]
+    command:
+      - "--authentication-policy=mysql_native_password"
+      - "--skip-ssl"
     environment:
       MYSQL_DATABASE: ${DB_NAME:-numok_app}
       MYSQL_USER: ${DB_USER:-numok_user}
