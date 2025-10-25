@@ -78,7 +78,7 @@ class PartnerEarningsController extends PartnerBaseController {
         
         // Add period filter
         if ($period !== 'all') {
-            $whereConditions[] = "c.created_at >= DATE_SUB(NOW(), INTERVAL ? DAY)";
+            $whereConditions[] = "c.created_at >= NOW() - ? * INTERVAL '1 day'";
             $params[] = $period;
         }
         
@@ -134,7 +134,7 @@ class PartnerEarningsController extends PartnerBaseController {
         
         // Add period filter
         if ($period !== 'all') {
-            $whereConditions[] = "c.created_at >= DATE_SUB(NOW(), INTERVAL ? DAY)";
+            $whereConditions[] = "c.created_at >= NOW() - ? * INTERVAL '1 day'";
             $params[] = $period;
         }
         
@@ -173,7 +173,7 @@ class PartnerEarningsController extends PartnerBaseController {
         
         // Add period filter
         if ($period !== 'all') {
-            $whereConditions[] = "c.created_at >= DATE_SUB(NOW(), INTERVAL ? DAY)";
+            $whereConditions[] = "c.created_at >= NOW() - ? * INTERVAL '1 day'";
             $params[] = $period;
         }
         
@@ -203,17 +203,17 @@ class PartnerEarningsController extends PartnerBaseController {
 
     private function getMonthlyEarnings(int $partnerId, string $period): array {
         $months = $period === 'all' ? 12 : min(12, ceil($period / 30));
-        
+
         return Database::query(
-            "SELECT 
-                DATE_FORMAT(c.created_at, '%Y-%m') as month,
+            "SELECT
+                TO_CHAR(c.created_at, 'YYYY-MM') as month,
                 COALESCE(SUM(c.commission_amount), 0) as earnings,
                 COUNT(c.id) as conversions
              FROM conversions c
              JOIN partner_programs pp ON c.partner_program_id = pp.id
-             WHERE pp.partner_id = ? 
-             AND c.created_at >= DATE_SUB(CURRENT_DATE(), INTERVAL ? MONTH)
-             GROUP BY DATE_FORMAT(c.created_at, '%Y-%m')
+             WHERE pp.partner_id = ?
+             AND c.created_at >= CURRENT_DATE - ? * INTERVAL '1 month'
+             GROUP BY TO_CHAR(c.created_at, 'YYYY-MM')
              ORDER BY month ASC",
             [$partnerId, $months]
         )->fetchAll();

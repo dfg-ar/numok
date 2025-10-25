@@ -51,37 +51,37 @@ class DashboardController extends Controller {
         
         // Get this month's revenue
         $revenue = Database::query(
-            "SELECT COALESCE(SUM(amount), 0) as total FROM conversions 
-             WHERE MONTH(created_at) = MONTH(CURRENT_DATE()) 
-             AND YEAR(created_at) = YEAR(CURRENT_DATE())"
+            "SELECT COALESCE(SUM(amount), 0) as total FROM conversions
+             WHERE EXTRACT(MONTH FROM created_at) = EXTRACT(MONTH FROM CURRENT_DATE)
+             AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)"
         )->fetch();
         
         // Get last month's revenue for comparison
         $lastMonthRevenue = Database::query(
-            "SELECT COALESCE(SUM(amount), 0) as total FROM conversions 
-             WHERE MONTH(created_at) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH) 
-             AND YEAR(created_at) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH)"
+            "SELECT COALESCE(SUM(amount), 0) as total FROM conversions
+             WHERE EXTRACT(MONTH FROM created_at) = EXTRACT(MONTH FROM CURRENT_DATE - INTERVAL '1 month')
+             AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE - INTERVAL '1 month')"
         )->fetch();
         
         // Get total conversions this month
         $monthlyConversions = Database::query(
-            "SELECT COUNT(*) as count FROM conversions 
-             WHERE MONTH(created_at) = MONTH(CURRENT_DATE()) 
-             AND YEAR(created_at) = YEAR(CURRENT_DATE())"
+            "SELECT COUNT(*) as count FROM conversions
+             WHERE EXTRACT(MONTH FROM created_at) = EXTRACT(MONTH FROM CURRENT_DATE)
+             AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)"
         )->fetch();
         
         // Get last month's conversions for comparison
         $lastMonthConversions = Database::query(
-            "SELECT COUNT(*) as count FROM conversions 
-             WHERE MONTH(created_at) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH) 
-             AND YEAR(created_at) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH)"
+            "SELECT COUNT(*) as count FROM conversions
+             WHERE EXTRACT(MONTH FROM created_at) = EXTRACT(MONTH FROM CURRENT_DATE - INTERVAL '1 month')
+             AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE - INTERVAL '1 month')"
         )->fetch();
         
         // Get total commission this month
         $monthlyCommission = Database::query(
-            "SELECT COALESCE(SUM(commission_amount), 0) as total FROM conversions 
-             WHERE MONTH(created_at) = MONTH(CURRENT_DATE()) 
-             AND YEAR(created_at) = YEAR(CURRENT_DATE())"
+            "SELECT COALESCE(SUM(commission_amount), 0) as total FROM conversions
+             WHERE EXTRACT(MONTH FROM created_at) = EXTRACT(MONTH FROM CURRENT_DATE)
+             AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)"
         )->fetch();
         
         // Get pending payouts
@@ -127,13 +127,13 @@ class DashboardController extends Controller {
     
     private function getRevenueTrends(): array {
         return Database::query(
-            "SELECT 
-                DATE_FORMAT(created_at, '%Y-%m') as month,
+            "SELECT
+                TO_CHAR(created_at, 'YYYY-MM') as month,
                 COALESCE(SUM(amount), 0) as revenue,
                 COUNT(*) as conversions
-             FROM conversions 
-             WHERE created_at >= DATE_SUB(CURRENT_DATE(), INTERVAL 6 MONTH)
-             GROUP BY DATE_FORMAT(created_at, '%Y-%m')
+             FROM conversions
+             WHERE created_at >= CURRENT_DATE - INTERVAL '6 months'
+             GROUP BY TO_CHAR(created_at, 'YYYY-MM')
              ORDER BY month ASC"
         )->fetchAll();
     }
@@ -179,18 +179,18 @@ class DashboardController extends Controller {
         
         // Recent partner signups
         $newPartners = Database::query(
-            "SELECT company_name, created_at, 'partner_signup' as type 
-             FROM partners 
-             WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+            "SELECT company_name, created_at, 'partner_signup' as type
+             FROM partners
+             WHERE created_at >= NOW() - INTERVAL '7 days'
              ORDER BY created_at DESC
              LIMIT 3"
         )->fetchAll();
         
         // Recent program creations
         $newPrograms = Database::query(
-            "SELECT name, created_at, 'program_created' as type 
-             FROM programs 
-             WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+            "SELECT name, created_at, 'program_created' as type
+             FROM programs
+             WHERE created_at >= NOW() - INTERVAL '7 days'
              ORDER BY created_at DESC
              LIMIT 3"
         )->fetchAll();
@@ -201,7 +201,7 @@ class DashboardController extends Controller {
              FROM conversions c
              JOIN partner_programs pp ON c.partner_program_id = pp.id
              JOIN partners p ON pp.partner_id = p.id
-             WHERE c.amount >= 100 AND c.created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+             WHERE c.amount >= 100 AND c.created_at >= NOW() - INTERVAL '7 days'
              ORDER BY c.created_at DESC
              LIMIT 3"
         )->fetchAll();

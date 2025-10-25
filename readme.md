@@ -9,7 +9,7 @@ Requirements
 ------------
 
 -   PHP 8.1 or higher
--   MySQL 5.7 or higher
+-   PostgreSQL 12 or higher
 -   Apache/Nginx web server
 -   Composer
 -   SSL certificate (required for Stripe integration)
@@ -25,7 +25,7 @@ Step-by-Step Installation
 php -v  # Verify PHP version
 php -m  # Check for required extensions:
         # - PDO
-        # - PDO_MySQL
+        # - pdo_pgsql
         # - json
         # - mbstring
 ```
@@ -44,9 +44,9 @@ cd numok
 ### 3\. Database Setup
 
 ```
-# Create a new MySQL database
-mysql -u root -p
-CREATE DATABASE numok CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+# Create a new PostgreSQL database
+psql -U postgres
+CREATE DATABASE numok WITH ENCODING 'UTF8';
 ```
 
 ### 4\. Configuration
@@ -75,7 +75,7 @@ CREATE DATABASE numok CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 ```
 # Import the database structure
-mysql -u your_db_user -p numok < database/deploy.sql
+psql -U your_db_user -d numok -f database/deploy.sql
 ```
 
 ### 6\. Web Server Configuration
@@ -189,8 +189,8 @@ Troubleshooting
     -   Confirm .htaccess is working
 2.  **Database Connection Failed**
     -   Verify database credentials
-    -   Check MySQL server is running
-    -   Confirm PHP PDO extension is installed
+    -   Check PostgreSQL server is running
+    -   Confirm PHP pdo_pgsql extension is installed
 3.  **Webhook Errors**
     -   Verify SSL certificate is valid
     -   Check Stripe webhook secret

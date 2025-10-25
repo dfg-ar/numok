@@ -1,6 +1,6 @@
 <?php
 
-// Database configuration
+// Database configuration (PostgreSQL)
 $config['database'] = [
     'host' => getenv('DB_HOST') ?: 'localhost',
     'database' => getenv('DB_NAME') ?: 'numok',

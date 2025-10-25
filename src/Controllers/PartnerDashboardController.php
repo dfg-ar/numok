@@ -62,29 +62,29 @@ class PartnerDashboardController extends PartnerBaseController {
 
         // Get this month's conversions
         $monthlyStats = Database::query(
-            "SELECT 
+            "SELECT
                 COUNT(c.id) as conversions,
                 COALESCE(SUM(c.amount), 0) as revenue,
                 COALESCE(SUM(c.commission_amount), 0) as commission
              FROM conversions c
              JOIN partner_programs pp ON c.partner_program_id = pp.id
              WHERE pp.partner_id = ?
-             AND MONTH(c.created_at) = MONTH(CURRENT_DATE())
-             AND YEAR(c.created_at) = YEAR(CURRENT_DATE())",
+             AND EXTRACT(MONTH FROM c.created_at) = EXTRACT(MONTH FROM CURRENT_DATE)
+             AND EXTRACT(YEAR FROM c.created_at) = EXTRACT(YEAR FROM CURRENT_DATE)",
             [$partnerId]
         )->fetch();
         
         // Get last month's stats for comparison
         $lastMonthStats = Database::query(
-            "SELECT 
+            "SELECT
                 COUNT(c.id) as conversions,
                 COALESCE(SUM(c.amount), 0) as revenue,
                 COALESCE(SUM(c.commission_amount), 0) as commission
              FROM conversions c
              JOIN partner_programs pp ON c.partner_program_id = pp.id
              WHERE pp.partner_id = ?
-             AND MONTH(c.created_at) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH)
-             AND YEAR(c.created_at) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH)",
+             AND EXTRACT(MONTH FROM c.created_at) = EXTRACT(MONTH FROM CURRENT_DATE - INTERVAL '1 month')
+             AND EXTRACT(YEAR FROM c.created_at) = EXTRACT(YEAR FROM CURRENT_DATE - INTERVAL '1 month')",
             [$partnerId]
         )->fetch();
 
@@ -162,15 +162,15 @@ class PartnerDashboardController extends PartnerBaseController {
     
     private function getEarningsTrends(int $partnerId): array {
         return Database::query(
-            "SELECT 
-                DATE_FORMAT(c.created_at, '%Y-%m') as month,
+            "SELECT
+                TO_CHAR(c.created_at, 'YYYY-MM') as month,
                 COALESCE(SUM(c.commission_amount), 0) as earnings,
                 COUNT(c.id) as conversions
              FROM conversions c
              JOIN partner_programs pp ON c.partner_program_id = pp.id
-             WHERE pp.partner_id = ? 
-             AND c.created_at >= DATE_SUB(CURRENT_DATE(), INTERVAL 6 MONTH)
-             GROUP BY DATE_FORMAT(c.created_at, '%Y-%m')
+             WHERE pp.partner_id = ?
+             AND c.created_at >= CURRENT_DATE - INTERVAL '6 months'
+             GROUP BY TO_CHAR(c.created_at, 'YYYY-MM')
              ORDER BY month ASC",
             [$partnerId]
         )->fetchAll();
@@ -205,7 +205,7 @@ class PartnerDashboardController extends PartnerBaseController {
              FROM conversions c
              JOIN partner_programs pp ON c.partner_program_id = pp.id
              JOIN programs p ON pp.program_id = p.id
-             WHERE pp.partner_id = ? AND c.created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+             WHERE pp.partner_id = ? AND c.created_at >= NOW() - INTERVAL '7 days'
              ORDER BY c.created_at DESC
              LIMIT 5",
             [$partnerId]
@@ -216,7 +216,7 @@ class PartnerDashboardController extends PartnerBaseController {
             "SELECT pp.created_at, p.name as program_name, 'program_join' as type
              FROM partner_programs pp
              JOIN programs p ON pp.program_id = p.id
-             WHERE pp.partner_id = ? AND pp.created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+             WHERE pp.partner_id = ? AND pp.created_at >= NOW() - INTERVAL '7 days'
              ORDER BY pp.created_at DESC
              LIMIT 3",
             [$partnerId]
