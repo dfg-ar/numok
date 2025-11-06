@@ -1,0 +1,97 @@
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: numok_app
+    restart: unless-stopped
+    ports:
+      - "${VIRTUAL_PORT}:80" # Map host 8080 to Apache 80
+    environment:
+      # App
+      APP_URL: ${VIRTUAL_HOST}
+      APP_DEBUG: ${APP_DEBUG-1}
+      # Database
+      DB_HOST: db
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      DB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      # One-time schema bootstrap (optional)
+      RUN_MIGRATIONS: ${RUN_MIGRATIONS-true}
+    depends_on:
+      - db
+    volumes:
+      # Persist uploads and tracking data under a common data directory
+      - numok_tracking_data:/var/www/html/public/tracking
+      - numok_uploads_data:/var/www/html/public/assets/uploads
+    networks:
+      - numok_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    # Add resource limits - uncomment if needed
+    # deploy:
+    #   resources:
+    #     limits:
+    #       memory: 512M
+    #     reservations:
+    #       memory: 256M
+
+  db:
+    image: mysql:8.0
+    container_name: numok_db
+    restart: unless-stopped
+    command:
+      - "--authentication-policy=mysql_native_password"
+      - "--skip-ssl"
+    environment:
+      MYSQL_DATABASE: ${DB_NAME:-numok_app}
+      MYSQL_USER: ${DB_USER:-numok_user}
+      MYSQL_PASSWORD: ${DB_PASS:-change_me_app_2025}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-change_me_root_2025}
+      MYSQL_ALLOW_EMPTY_PASSWORD: "no"
+    ports:
+      - "33060:3306"
+    volumes:
+      # Store MySQL data under the common data directory (bind mount)
+      - numok_db_data:/var/lib/mysql
+    networks:
+      - numok_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    # Add resource limits - uncomment if needed
+    # deploy:
+    #   resources:
+    #     limits:
+    #       memory: 1G
+    #     reservations:
+    #       memory: 512M
+
+networks:
+  numok_network:
+    driver: bridge
+    # Add network security options - uncomment if needed
+    # driver_opts:
+    #   com.docker.network.bridge.enable_icc: "true"
+    #   com.docker.network.bridge.enable_ip_masquerade: "true"
+
+volumes:
+  numok_db_data:
+    driver: local
+  numok_tracking_data:
+    driver: local
+  numok_uploads_data:
+    driver: local
+

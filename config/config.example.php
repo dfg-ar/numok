@@ -3,9 +3,9 @@
 // Database configuration
 $config['database'] = [
     'host' => getenv('DB_HOST') ?: 'localhost',
-    'database' => getenv('DB_NAME') ?: 'numok',
-    'username' => getenv('DB_USER') ?: 'DBUSER',
-    'password' => getenv('DB_PASS') ?: 'DBPASS',
+    'database' => getenv('DB_NAME') ?: 'numok_app',
+    'username' => getenv('DB_USER') ?: 'numok_user',
+    'password' => getenv('DB_PASS') ?: 'change_me_app_2025',
 ];
 
 // Initialize database connection
