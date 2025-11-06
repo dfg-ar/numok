@@ -2,6 +2,24 @@
 
 An open source affiliate program that connects to Stripe to track payments.
 
+## 🚀 Quick Start with Docker
+
+**New!** Get up and running in minutes with Docker:
+
+```bash
+cd docker
+cp .env_example .env
+docker compose up -d --build
+```
+
+Then visit `http://localhost:8080/admin/login` and login with:
+- **Email**: `admin@numok.com`
+- **Password**: `admin123`
+
+📖 **[Complete Docker Documentation →](docker/README_DOCKER.md)**
+
+---
+
 Installation Guide
 ==================
 
@@ -14,6 +32,8 @@ Requirements
 -   Composer
 -   SSL certificate (required for Stripe integration)
 -   Stripe account
+
+> 💡 **Prefer Docker?** Skip the manual setup and use our [Docker installation](docker/README_DOCKER.md) instead!
 
 Step-by-Step Installation
 -------------------------
