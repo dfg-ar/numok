@@ -30,6 +30,10 @@ $routes = [
     'auth/login' => ['PartnerAuthController', 'login'],
     'register' => ['PartnerAuthController', 'register'],
     'auth/register' => ['PartnerAuthController', 'store'],
+    'forgot-password' => ['PasswordResetController', 'showLinkRequestForm'],
+    'password/email' => ['PasswordResetController', 'sendResetLinkEmail'],
+    'password/reset/(\w+)' => ['PasswordResetController', 'showResetForm'],
+    'password/reset' => ['PasswordResetController', 'reset'],
     'settings' => ['PartnerProfileController', 'index'],
     'settings/update' => ['PartnerProfileController', 'update'],
     'logout' => ['PartnerAuthController', 'logout'],
@@ -51,7 +55,7 @@ $routes = [
     'admin/settings/reset-branding' => ['SettingsController', 'resetBranding'],
     'admin/settings/update-profile' => ['SettingsController', 'updateProfile'],
     'admin/settings/test-connection' => ['SettingsController', 'testConnection'],
-    
+
     // Programs routes
     'admin/programs' => ['ProgramsController', 'index'],
     'admin/programs/create' => ['ProgramsController', 'create'],
@@ -91,7 +95,7 @@ foreach ($routes as $pattern => $route) {
     if (preg_match('/^' . $pattern . '$/', $path, $matches)) {
         // Remove the full match from the matches array
         array_shift($matches);
-        
+
         // Get controller and method
         $controllerName = "Numok\\Controllers\\" . $route[0];
         $methodName = $route[1];
@@ -99,26 +103,26 @@ foreach ($routes as $pattern => $route) {
         try {
             // Create controller instance
             $controller = new $controllerName();
-            
+
             // Type cast numeric parameters to integer
-            $params = array_map(function($value) {
-                return is_numeric($value) ? (int)$value : $value;
+            $params = array_map(function ($value) {
+                return is_numeric($value) ? (int) $value : $value;
             }, $matches);
-            
+
             // Call the method with any captured parameters
             $controller->$methodName(...$params);
-            
+
             $matched = true;
             break;
         } catch (\Exception $e) {
             // Log error
             error_log($e->getMessage());
-            
+
             // Show error in development
             if (isset($config['app']['debug']) && $config['app']['debug']) {
                 throw $e;
             }
-            
+
             // Show 500 error in production
             http_response_code(500);
             echo "500 - Internal Server Error";

@@ -8,6 +8,12 @@ $config['database'] = [
     'password' => getenv('DB_PASS') ?: 'change_me_app_2025',
 ];
 
+// Email configuration
+$config['email'] = [
+    'resend_api_key' => getenv('RESEND_API_KEY') ?: 'RESEND_API_KEY',
+    'from_address' => getenv('MAIL_FROM_ADDRESS') ?: 'onboarding@resend.dev',
+];
+
 // Initialize database connection
 \Numok\Database\Database::setConfig($config['database']);
 

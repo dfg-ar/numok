@@ -4,17 +4,19 @@ namespace Numok\Controllers;
 
 use Numok\Database\Database;
 
-class PartnerAuthController extends PartnerBaseController {
-    public function index(): void {
+class PartnerAuthController extends PartnerBaseController
+{
+    public function index(): void
+    {
         // If already logged in, redirect to partner dashboard
         if ($this->isLoggedIn()) {
             header('Location: /dashboard');
             exit;
         }
-        
+
         $error = $_SESSION['login_error'] ?? '';
         unset($_SESSION['login_error']);
-        
+
         $settings = $this->getSettings();
         $this->view('partner/auth/login', [
             'title' => 'Partner Login - ' . ($settings['custom_app_name'] ?? 'Numok'),
@@ -22,7 +24,8 @@ class PartnerAuthController extends PartnerBaseController {
         ]);
     }
 
-    public function login(): void {
+    public function login(): void
+    {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: /login');
             exit;
@@ -36,9 +39,9 @@ class PartnerAuthController extends PartnerBaseController {
             header('Location: /login');
             exit;
         }
-        
+
         $partner = Database::query(
-            "SELECT * FROM partners WHERE email = ? AND status != 'rejected' LIMIT 1", 
+            "SELECT * FROM partners WHERE email = ? AND status != 'rejected' LIMIT 1",
             [$email]
         )->fetch();
 
@@ -70,22 +73,24 @@ class PartnerAuthController extends PartnerBaseController {
         $_SESSION['partner_id'] = $partner['id'];
         $_SESSION['partner_email'] = $partner['email'];
         $_SESSION['partner_company'] = $partner['company_name'];
-        
+
         // Regenerate session ID for security
         session_regenerate_id(true);
-        
+
         header('Location: /dashboard');
         exit;
     }
 
-    public function register(): void {
+    public function register(): void
+    {
         $settings = $this->getSettings();
         $this->view('partner/auth/register', [
             'title' => 'Register - ' . ($settings['custom_app_name'] ?? 'Numok')
         ]);
     }
 
-    public function store(): void {
+    public function store(): void
+    {
         // Debug logging
         error_log('Partner registration attempt - POST data: ' . print_r($_POST, true));
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -127,13 +132,13 @@ class PartnerAuthController extends PartnerBaseController {
             // Sanitize inputs
             $companyName = trim($_POST['company_name']);
             $contactName = trim($_POST['contact_name']);
-            
+
             if (empty($companyName) || empty($contactName)) {
                 $_SESSION['register_error'] = 'Company name and contact name are required';
                 header('Location: /register');
                 exit;
             }
-            
+
             Database::insert('partners', [
                 'email' => $email,
                 'password' => password_hash($_POST['password'], PASSWORD_DEFAULT),
@@ -142,9 +147,13 @@ class PartnerAuthController extends PartnerBaseController {
                 'payment_email' => $email,
                 'status' => 'active'  // Automatically activate partners
             ]);
-            
+
             // Log successful registration
             error_log("Partner registered successfully - Email: $email, Company: $companyName");
+
+            // Send welcome email
+            $emailService = new \Numok\Services\EmailService();
+            $emailService->sendWelcomeEmail($email, $contactName);
 
             $_SESSION['register_success'] = 'Registration successful!';
             header('Location: /login');
@@ -155,21 +164,23 @@ class PartnerAuthController extends PartnerBaseController {
         exit;
     }
 
-    public function logout(): void {
+    public function logout(): void
+    {
         // Clear session
         $_SESSION = [];
-        
+
         if (isset($_COOKIE[session_name()])) {
             setcookie(session_name(), '', time() - 3600, '/');
         }
-        
+
         session_destroy();
-        
+
         header('Location: /login');
         exit;
     }
 
-    private function isLoggedIn(): bool {
+    private function isLoggedIn(): bool
+    {
         return isset($_SESSION['partner_id']);
     }
 }

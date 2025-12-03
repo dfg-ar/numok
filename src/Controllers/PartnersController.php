@@ -5,12 +5,15 @@ namespace Numok\Controllers;
 use Numok\Database\Database;
 use Numok\Middleware\AuthMiddleware;
 
-class PartnersController extends Controller {
-    public function __construct() {
+class PartnersController extends Controller
+{
+    public function __construct()
+    {
         AuthMiddleware::handle();
     }
 
-    public function index(): void {
+    public function index(): void
+    {
         $partners = Database::query(
             "SELECT p.*, 
                     COUNT(DISTINCT pp.program_id) as total_programs,
@@ -31,14 +34,16 @@ class PartnersController extends Controller {
         ]);
     }
 
-    public function create(): void {
+    public function create(): void
+    {
         $settings = $this->getSettings();
         $this->view('partners/create', [
             'title' => 'Create Partner - ' . ($settings['custom_app_name'] ?? 'Numok')
         ]);
     }
 
-    public function store(): void {
+    public function store(): void
+    {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: /admin/partners');
             exit;
@@ -75,6 +80,11 @@ class PartnersController extends Controller {
 
         try {
             Database::insert('partners', $data);
+
+            // Send welcome email
+            $emailService = new \Numok\Services\EmailService();
+            $emailService->sendWelcomeEmail($email, $_POST['contact_name'] ?? '');
+
             $_SESSION['success'] = 'Partner created successfully.';
         } catch (\Exception $e) {
             $_SESSION['error'] = 'Failed to create partner. Please try again.';
@@ -84,7 +94,8 @@ class PartnersController extends Controller {
         exit;
     }
 
-    public function edit(int $id): void {
+    public function edit(int $id): void
+    {
         $partner = Database::query(
             "SELECT * FROM partners WHERE id = ? LIMIT 1",
             [$id]
@@ -129,7 +140,8 @@ class PartnersController extends Controller {
         ]);
     }
 
-    public function update(int $id): void {
+    public function update(int $id): void
+    {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: /admin/partners');
             exit;
@@ -152,13 +164,11 @@ class PartnersController extends Controller {
             'status' => $_POST['status'] ?? 'pending'
         ];
 
-        if (!empty($_POST['company_name']))
-        {
+        if (!empty($_POST['company_name'])) {
             $data['company_name'] = $_POST['company_name'] ?? '';
         }
-        
-        if (!empty($_POST['contact_name']))
-        {
+
+        if (!empty($_POST['contact_name'])) {
             $data['contact_name'] = $_POST['contact_name'] ?? '';
         }
 
@@ -173,7 +183,8 @@ class PartnersController extends Controller {
         exit;
     }
 
-    public function delete(int $id): void {
+    public function delete(int $id): void
+    {
         try {
             Database::query(
                 "DELETE FROM partners WHERE id = ?",
@@ -188,14 +199,15 @@ class PartnersController extends Controller {
         exit;
     }
 
-    public function assignProgram(int $id): void {
+    public function assignProgram(int $id): void
+    {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: /admin/partners/' . $id . '/edit');
             exit;
         }
 
         $programId = $_POST['program_id'] ?? 0;
-        
+
         // Validate program exists
         $program = Database::query(
             "SELECT id FROM programs WHERE id = ? AND status = 'active'",
