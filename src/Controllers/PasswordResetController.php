@@ -57,7 +57,8 @@ class PasswordResetController extends Controller
         ]);
 
         // Send email
-        $resetLink = (getenv('APP_URL') ?: 'http://localhost') . "/password/reset/" . $token;
+        $config = require ROOT_PATH . '/config/config.php';
+        $resetLink = $config['app']['url'] . "/password/reset/" . $token;
 
         $emailService = new EmailService();
         $emailService->sendPasswordResetEmail($email, $resetLink);
