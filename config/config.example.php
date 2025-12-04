@@ -3,6 +3,7 @@
 // Database configuration
 $config['database'] = [
     'host' => getenv('DB_HOST') ?: 'localhost',
+    'port' => getenv('DB_PORT') ?: '3306',
     'database' => getenv('DB_NAME') ?: 'numok_app',
     'username' => getenv('DB_USER') ?: 'numok_user',
     'password' => getenv('DB_PASS') ?: 'change_me_app_2025',
