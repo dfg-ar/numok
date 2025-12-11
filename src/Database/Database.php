@@ -20,8 +20,9 @@ class Database {
         if (self::$instance === null) {
             try {
                 $dsn = sprintf(
-                    "mysql:host=%s;dbname=%s;charset=utf8mb4",
+                    "mysql:host=%s;port=%s;dbname=%s;charset=utf8mb4",
                     self::$config['host'],
+                    self::$config['port'],
                     self::$config['database']
                 );
 
