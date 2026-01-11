@@ -54,7 +54,8 @@ class ProgramsController extends Controller {
             'is_recurring' => isset($_POST['is_recurring']) ? 1 : 0,
             'reward_days' => intval($_POST['reward_days'] ?? 0),
             'landing_page' => $_POST['landing_page'] ?? '',
-            'status' => 'active'
+            'status' => 'active',
+            'is_private' => isset($_POST['is_private']) ? 1 : 0
         ];
     
         try {
@@ -153,7 +154,8 @@ class ProgramsController extends Controller {
             'is_recurring' => isset($_POST['is_recurring']) ? 1 : 0,
             'reward_days' => intval($_POST['reward_days'] ?? 0),
             'landing_page' => $_POST['landing_page'] ?? '',
-            'status' => $_POST['status'] ?? 'active'
+            'status' => $_POST['status'] ?? 'active',
+            'is_private' => isset($_POST['is_private']) ? 1 : 0
         ];
 
         try {

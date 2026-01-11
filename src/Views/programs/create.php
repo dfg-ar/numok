@@ -86,17 +86,31 @@ By participating in the Program, you acknowledge and agree to these terms.</text
                             <p class="mt-3 text-sm leading-6 text-gray-600">Terms that partners must accept before joining the program.</p>
                         </div>
 
-                        <div class="sm:col-span-4">
-                            <label for="landing_page" class="block text-sm font-medium leading-6 text-gray-900">Landing Page URL</label>
-                            <div class="mt-2">
-                                <input type="url" name="landing_page" id="landing_page" required
-                                       value="<?= htmlspecialchars($program['landing_page'] ?? '') ?>"
-                                       class="block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-3">
-                            </div>
-                            <p class="mt-3 text-sm leading-6 text-gray-600">The page where partners should send their traffic.</p>
-                        </div>
-                    </div>
-                </div>
+<div class="sm:col-span-4">
+                                            <label for="landing_page" class="block text-sm font-medium leading-6 text-gray-900">Landing Page URL</label>
+                                            <div class="mt-2">
+                                                <input type="url" name="landing_page" id="landing_page" required
+                                                       value="<?= htmlspecialchars($program['landing_page'] ?? '') ?>"
+                                                       class="block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-3">
+                                            </div>
+                                            <p class="mt-3 text-sm leading-6 text-gray-600">The page where partners should send their traffic.</p>
+                                        </div>
+
+                                        <div class="col-span-full">
+                                            <div class="relative flex gap-x-3">
+                                                <div class="flex h-6 items-center">
+                                                    <input type="checkbox" name="is_private" id="is_private" 
+                                                           <?= ($program['is_private'] ?? false) ? 'checked' : '' ?>
+                                                           class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
+                                                </div>
+                                                <div class="text-sm leading-6">
+                                                    <label for="is_private" class="font-medium text-gray-900">Private Program</label>
+                                                    <p class="text-gray-500">Private programs are not visible to partners. Only partners manually assigned by an admin can access this program.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
                 <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
                     <div>

@@ -110,9 +110,19 @@
                                         $<?= number_format($program['total_revenue'], 2) ?>
                                     </td>
                                     <td class="whitespace-nowrap px-3 py-4 text-sm">
-                                        <span class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium <?= $program['status'] === 'active' ? 'bg-green-50 text-green-700' : 'bg-yellow-50 text-yellow-700' ?>">
-                                            <?= ucfirst(htmlspecialchars($program['status'])) ?>
-                                        </span>
+                                        <div class="flex items-center space-x-2">
+                                            <span class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium <?= $program['status'] === 'active' ? 'bg-green-50 text-green-700' : 'bg-yellow-50 text-yellow-700' ?>">
+                                                <?= ucfirst(htmlspecialchars($program['status'])) ?>
+                                            </span>
+                                            <?php if ($program['is_private'] ?? false): ?>
+                                                <span class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium bg-gray-100 text-gray-700">
+                                                    <svg class="mr-1 h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                                                    </svg>
+                                                    Private
+                                                </span>
+                                            <?php endif; ?>
+                                        </div>
                                     </td>
                                     <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                                         <div class="flex items-center justify-end space-x-2">

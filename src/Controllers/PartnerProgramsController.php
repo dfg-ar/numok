@@ -13,7 +13,9 @@ class PartnerProgramsController extends PartnerBaseController {
     public function index(): void {
         $partnerId = $_SESSION['partner_id'];
 
-        // Get all active programs
+        // Get all active programs that are:
+        // 1. Public (is_private = 0), OR
+        // 2. Already assigned to this partner (joined)
         $programs = Database::query(
             "SELECT p.*, 
                     CASE 
@@ -25,6 +27,7 @@ class PartnerProgramsController extends PartnerBaseController {
              LEFT JOIN partner_programs pp ON p.id = pp.program_id 
                 AND pp.partner_id = ?
              WHERE p.status = 'active'
+               AND (p.is_private = 0 OR pp.id IS NOT NULL)
              ORDER BY p.name",
             [$partnerId]
         )->fetchAll();
@@ -45,9 +48,9 @@ class PartnerProgramsController extends PartnerBaseController {
         $partnerId = $_SESSION['partner_id'];
         $programId = $_POST['program_id'] ?? 0;
 
-        // Validate program exists and is active
+        // Validate program exists, is active, and is public (private programs can only be assigned by admin)
         $program = Database::query(
-            "SELECT id FROM programs WHERE id = ? AND status = 'active'",
+            "SELECT id, terms FROM programs WHERE id = ? AND status = 'active' AND is_private = 0",
             [$programId]
         )->fetch();
 

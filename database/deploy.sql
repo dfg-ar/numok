@@ -132,9 +132,11 @@ CREATE TABLE `programs` (
   `reward_days` int unsigned DEFAULT '0',
   `landing_page` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `status` enum('active','inactive') COLLATE utf8mb4_unicode_ci DEFAULT 'active',
+  `is_private` tinyint(1) NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `idx_is_private` (`is_private`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
@@ -196,3 +198,12 @@ CREATE TABLE `password_resets` (
   KEY `email` (`email`),
   KEY `token` (`token`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Migration 0004: Add is_private column to programs table
+-- Default to 0 (public) to preserve existing program behavior
+ALTER TABLE programs
+ADD COLUMN IF NOT EXISTS is_private TINYINT(1) NOT NULL DEFAULT 0 AFTER status;
+
+-- Add index for efficient filtering on visibility (ignore if exists)
+ALTER TABLE programs
+ADD INDEX IF NOT EXISTS idx_is_private (is_private);
