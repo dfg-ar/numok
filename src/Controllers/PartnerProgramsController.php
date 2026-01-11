@@ -73,29 +73,25 @@ class PartnerProgramsController extends PartnerBaseController {
             exit;
         }
 
-        // Store terms acceptance details
-        if (!empty($program['terms'])) {
-            Database::update(
-                'partner_programs',
-                [
-                    'terms_accepted' => date('Y-m-d H:i:s'),
-                    'terms_accepted_ip' => $_SERVER['REMOTE_ADDR']
-                ],
-                'partner_id = ? AND program_id = ?',
-                [$partnerId, $programId]
-            );
-        }
-
         // Generate unique tracking code
         $trackingCode = bin2hex(random_bytes(8));
 
+        // Prepare insert data
+        $insertData = [
+            'partner_id' => $partnerId,
+            'program_id' => $programId,
+            'tracking_code' => $trackingCode,
+            'status' => 'active'
+        ];
+
+        // Store terms acceptance details if program has terms
+        if (!empty($program['terms'])) {
+            $insertData['terms_accepted'] = date('Y-m-d H:i:s');
+            $insertData['terms_accepted_ip'] = $_SERVER['REMOTE_ADDR'];
+        }
+
         try {
-            Database::insert('partner_programs', [
-                'partner_id' => $partnerId,
-                'program_id' => $programId,
-                'tracking_code' => $trackingCode,
-                'status' => 'active'
-            ]);
+            Database::insert('partner_programs', $insertData);
 
             $_SESSION['success'] = 'Successfully joined the program!';
         } catch (\Exception $e) {
